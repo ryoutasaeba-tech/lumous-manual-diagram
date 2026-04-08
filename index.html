@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUMOUS マニュアル図解メーカー</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary: #685021;
+            --primary-light: #c39f59;
+            --primary-gradient: linear-gradient(135deg, #c39f59, #8b6f47);
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --text-dark: #333333;
+            --text-muted: #6c757d;
+            --border: #e9ecef;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+            --radius-sm: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 32px;
+            box-shadow: 0 2px 20px var(--shadow);
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: var(--primary);
+        }
+
+        .logo-sub {
+            font-size: 12px;
+            letter-spacing: 6px;
+            color: var(--primary-light);
+            margin-top: 2px;
+        }
+
+        .api-key-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .api-key-input {
+            width: 280px;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            transition: var(--transition);
+        }
+
+        .api-key-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(195, 159, 89, 0.1);
+        }
+
+        .api-key-save {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .api-key-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(195, 159, 89, 0.4);
+        }
+
+        .api-status {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .api-status.connected {
+            color: #10b981;
+        }
+
+        /* ===== Main Layout ===== */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px;
+            display: flex;
+            gap: 32px;
+        }
+
+        /* ===== Input Panel ===== */
+        .input-panel {
+            width: 400px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-card {
+            background: var(--bg-white);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 4px 30px var(--shadow);
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .input-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: inherit;
+            line-height: 1.8;
+            resize: vertical;
+            transition: var(--transition);
+        }
+
+        .input-textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(195, 159, 89, 0.1);
+        }
+
+        .input-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .diagram-type {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .type-btn {
+            padding: 8px 16px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .type-btn:hover {
+            border-color: var(--primary-light);
+        }
+
+        .type-btn.selected {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .btn-generate {
+            width: 100%;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 1px;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(104, 80, 33, 0.3);
+        }
+
+        .btn-generate:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-generate.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn-generate.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 24px;
+            height: 24px;
+            margin: -12px 0 0 -12px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== Templates ===== */
+        .templates {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .template-btn {
+            padding: 12px 16px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: left;
+            color: var(--text-dark);
+        }
+
+        .template-btn:hover {
+            border-color: var(--primary-light);
+            transform: translateX(4px);
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        /* ===== Output Panel ===== */
+        .output-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 0;
+        }
+
+        .output-toolbar {
+            background: var(--bg-white);
+            border-radius: var(--radius);
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .toolbar-sep {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+            margin: 0 6px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-muted);
+            position: relative;
+        }
+
+        .btn-icon:hover {
+            background: var(--bg-light);
+            color: var(--primary);
+        }
+
+        .btn-icon.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-icon .tooltip {
+            display: none;
+            position: absolute;
+            bottom: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-dark);
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .btn-icon:hover .tooltip {
+            display: block;
+        }
+
+        .btn-save-group {
+            display: flex;
+            gap: 2px;
+            margin-left: 6px;
+        }
+
+        .btn-save {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-save.primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-save.secondary {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Keep for non-toolbar uses */
+        .btn-action {
+            padding: 6px 12px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-dark);
+            white-space: nowrap;
+        }
+
+        .btn-action:hover {
+            border-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .output-content {
+            background: var(--bg-white);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: 0 4px 30px var(--shadow);
+            min-height: 400px;
+        }
+
+        .output-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            color: var(--text-muted);
+            text-align: center;
+            gap: 16px;
+        }
+
+        .output-placeholder-icon {
+            font-size: 48px;
+            opacity: 0.3;
+        }
+
+        /* ===== Manual Output Styles ===== */
+        .manual-output h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .manual-output h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 28px 0 12px;
+            padding-left: 12px;
+            border-left: 4px solid var(--primary-light);
+        }
+
+        .manual-output h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 20px 0 8px;
+        }
+
+        .manual-output p {
+            margin: 8px 0;
+            line-height: 1.8;
+        }
+
+        .manual-output ul, .manual-output ol {
+            margin: 8px 0 8px 24px;
+            line-height: 2;
+        }
+
+        .manual-output li {
+            margin: 4px 0;
+        }
+
+        .manual-output strong {
+            color: var(--primary);
+        }
+
+        .manual-output .mermaid-container {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .manual-output .step-box {
+            background: var(--bg-light);
+            border-left: 4px solid var(--primary-light);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            margin: 12px 0;
+        }
+
+        .manual-output .note-box {
+            background: #fff8e1;
+            border-left: 4px solid #f59e0b;
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            margin: 12px 0;
+        }
+
+        .manual-output .warning-box {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            margin: 12px 0;
+        }
+
+        .manual-output table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        .manual-output th {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .manual-output td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .manual-output tr:hover td {
+            background: var(--bg-light);
+        }
+
+        /* ===== History ===== */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 12px 16px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item:hover {
+            border-color: var(--primary-light);
+            transform: translateX(4px);
+        }
+
+        .history-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .history-date {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .history-delete {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            transition: var(--transition);
+        }
+
+        .history-delete:hover {
+            color: #ef4444;
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--primary);
+            color: white;
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ===== Print ===== */
+        @media print {
+            .header, .input-panel, .output-actions, .toast {
+                display: none !important;
+            }
+            .main {
+                padding: 0;
+            }
+            .output-panel {
+                width: 100%;
+            }
+            .output-content {
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 900px) {
+            .main {
+                flex-direction: column;
+                padding: 16px;
+            }
+            .input-panel {
+                width: 100%;
+            }
+            .header-inner {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .api-key-input {
+                width: 200px;
+            }
+        }
+
+        /* ===== Scrollbar ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Edit mode */
+        .output-content.editing {
+            border: 2px solid var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(195, 159, 89, 0.15);
+        }
+
+        .output-content.editing .manual-output [contenteditable="true"]:hover {
+            outline: 2px dashed var(--primary-light);
+            outline-offset: 2px;
+        }
+
+        .output-content.editing .manual-output [contenteditable="true"]:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+            background: rgba(195, 159, 89, 0.03);
+        }
+
+        /* Fullscreen mode */
+        .output-panel.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 900;
+            background: var(--bg-light);
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .output-panel.fullscreen .output-toolbar {
+            border-radius: 0;
+            margin-bottom: 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .output-panel.fullscreen .output-content {
+            flex: 1;
+            overflow-y: auto;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 40px 80px;
+            max-width: 100%;
+        }
+
+        @media print {
+            .output-panel.fullscreen {
+                position: static;
+            }
+        }
+
+        .edit-indicator {
+            background: var(--primary-gradient);
+            color: white;
+            font-size: 12px;
+            padding: 6px 16px;
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .manual-output img.inserted-image {
+            max-width: 100%;
+            border-radius: var(--radius-sm);
+            margin: 16px 0;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .manual-output img.inserted-image:hover {
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .diagram-edit-area {
+            margin: 16px 0;
+        }
+
+        .diagram-edit-area textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 16px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .diagram-edit-area textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(195, 159, 89, 0.1);
+        }
+
+        .diagram-edit-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .diagram-edit-actions button {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-rerender {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-rerender:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(195, 159, 89, 0.4);
+        }
+
+        .btn-add-img-to-diagram {
+            background: var(--bg-light);
+            border: 1px solid var(--border) !important;
+            color: var(--text-dark);
+        }
+
+        .btn-add-img-to-diagram:hover {
+            border-color: var(--primary-light) !important;
+        }
+
+        .btn-diagram-cancel {
+            background: var(--bg-light);
+            border: 1px solid var(--border) !important;
+            color: var(--text-muted);
+        }
+
+        .mermaid-container.editable-hint {
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mermaid-container.editable-hint:hover {
+            outline: 2px dashed var(--primary-light);
+            outline-offset: 4px;
+        }
+
+        .mermaid-container.editable-hint::after {
+            content: 'クリックで図を編集';
+            display: block;
+            text-align: center;
+            font-size: 11px;
+            color: var(--primary-light);
+            margin-top: 8px;
+        }
+
+        .image-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            margin: 16px 0;
+        }
+
+        .image-wrapper .img-delete {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-wrapper:hover .img-delete {
+            display: flex;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            margin: 16px 0;
+        }
+
+        .video-wrapper video {
+            max-width: 100%;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .video-wrapper .vid-delete {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .video-wrapper:hover .vid-delete {
+            display: flex;
+        }
+
+        /* Hide mermaid error messages */
+        #d-mermaid, [id^="dmermaid"], .error-icon, .mermaid .error-text {
+            display: none !important;
+        }
+
+        /* Mermaid label nodes (small circles) */
+        .mermaid-container svg .node circle {
+            fill: #fff8e1 !important;
+            stroke: #c39f59 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div>
+                <h1 class="logo">LUMOUS</h1>
+                <p class="logo-sub">MANUAL DIAGRAM MAKER</p>
+            </div>
+            <div class="api-key-area">
+                <select id="apiProvider" style="padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px;">
+                    <option value="groq">Groq（無料・推奨）</option>
+                    <option value="gemini">Gemini</option>
+                </select>
+                <input type="password" id="apiKeyInput" class="api-key-input" placeholder="APIキーを入力">
+                <button class="api-key-save" onclick="saveApiKey()">保存</button>
+                <span class="api-status" id="apiStatus">未設定</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <div class="main">
+        <!-- Input Panel -->
+        <div class="input-panel">
+            <div class="panel-card">
+                <h3 class="panel-title">図解の種類</h3>
+                <div class="diagram-type" id="diagramType">
+                    <button class="type-btn selected" data-type="auto">自動判定</button>
+                    <button class="type-btn" data-type="flowchart">フローチャート</button>
+                    <button class="type-btn" data-type="sequence">シーケンス図</button>
+                    <button class="type-btn" data-type="stateDiagram">状態遷移図</button>
+                </div>
+
+                <h3 class="panel-title">マニュアル内容を入力</h3>
+                <textarea id="inputText" class="input-textarea" placeholder="例：お客様から電話が来たら、まず名前を聞いて、既存顧客か確認。既存なら担当に繋ぐ、新規なら受付フォームに記入してもらう"></textarea>
+
+                <button class="btn-generate" id="generateBtn" onclick="generate()">マニュアルを生成</button>
+            </div>
+
+            <!-- Template -->
+            <div class="panel-card">
+                <h3 class="panel-title">テンプレート</h3>
+                <div class="templates">
+                    <button class="template-btn" onclick="useTemplate('phone')">電話対応マニュアル</button>
+                </div>
+            </div>
+
+            <!-- Saved Manuals -->
+            <div class="panel-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 class="panel-title" style="margin-bottom: 0;">保存済みマニュアル</h3>
+                    <button class="btn-action" onclick="clearAllSaved()" style="font-size: 11px; padding: 4px 12px;">全削除</button>
+                </div>
+                <input type="text" id="savedSearch" class="input-field" placeholder="検索..." oninput="renderSavedList()" style="margin-top: 12px; padding: 8px 12px; font-size: 13px;">
+                <div class="history-list" id="savedList" style="margin-top: 8px;">
+                    <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px;">まだ保存がありません</div>
+                </div>
+            </div>
+
+            <!-- Backup -->
+            <div class="panel-card">
+                <h3 class="panel-title">GitHub バックアップ</h3>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-primary" onclick="backupToGithub()" style="flex:1; padding: 10px; font-size: 13px;">バックアップ</button>
+                    <button class="btn-secondary" onclick="restoreFromGithub()" style="flex:1; padding: 10px; font-size: 13px;">復元</button>
+                </div>
+                <p id="backupStatus" style="font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: center;"></p>
+            </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="output-panel">
+            <div class="output-toolbar" id="outputToolbar">
+                <button class="btn-icon" onclick="toggleFullscreen()" id="fullscreenBtn" style="display:none;"><span>&#x26F6;</span><span class="tooltip">全画面</span></button>
+                <button class="btn-icon" onclick="toggleDiagramText()" id="toggleBtn" style="display:none;"><span>&#x1F504;</span><span class="tooltip">図 / テキスト</span></button>
+                <div class="toolbar-sep"></div>
+                <button class="btn-icon" onclick="toggleEdit()" id="editBtn" style="display:none;"><span>&#x270F;</span><span class="tooltip">編集</span></button>
+                <button class="btn-icon" onclick="addImage()" id="imgBtn" style="display:none;"><span>&#x1F5BC;</span><span class="tooltip">画像追加</span></button>
+                <button class="btn-icon" onclick="addVideo()" id="videoBtn" style="display:none;"><span>&#x1F3AC;</span><span class="tooltip">動画追加</span></button>
+                <div class="toolbar-sep"></div>
+                <button class="btn-icon" onclick="printManual()"><span>&#x1F5A8;</span><span class="tooltip">印刷 / PDF</span></button>
+                <button class="btn-icon" onclick="copyManual()"><span>&#x1F4CB;</span><span class="tooltip">コピー</span></button>
+                <div class="btn-save-group">
+                    <button class="btn-save primary" onclick="saveManual()" id="saveBtn" style="display:none;">新規保存</button>
+                    <button class="btn-save secondary" onclick="openOverwriteModal()" id="overwriteBtn" style="display:none;">上書き</button>
+                </div>
+            </div>
+            <input type="file" id="imageInput" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+            <input type="file" id="videoInput" accept="video/*" style="display:none;" onchange="handleVideoUpload(event)">
+
+            <div class="output-content" id="outputContent">
+                <div class="output-placeholder">
+                    <div class="output-placeholder-icon">&#128196;</div>
+                    <p>左のテキストエリアにマニュアルの内容を入力し<br>「マニュアルを生成」をクリックしてください</p>
+                    <p style="font-size: 13px;">AIが自動で図解付きマニュアルを作成します</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overwrite Modal -->
+    <div id="overwriteModalOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:1000;">
+        <div style="background:var(--bg-white);border-radius:var(--radius);padding:32px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <h2 style="font-size:20px;font-weight:300;color:var(--primary);margin-bottom:20px;letter-spacing:1px;">上書き先を選択</h2>
+            <input type="text" id="overwriteSearch" class="input-field" placeholder="検索..." oninput="renderOverwriteList()" style="margin-bottom:12px;padding:10px 14px;font-size:13px;">
+            <div id="overwriteList" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;"></div>
+            <div style="display:flex;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+                <button class="btn-action" onclick="closeOverwriteModal()">キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ===== Init =====
+        mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: 'loose',
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#c39f59',
+                primaryBorderColor: '#8b6f47',
+                primaryTextColor: '#333',
+                lineColor: '#8b6f47',
+                secondaryColor: '#f8f9fa',
+                tertiaryColor: '#fff8e1',
+                fontFamily: 'Segoe UI, Hiragino Sans, Meiryo, sans-serif'
+            }
+        });
+
+        let selectedType = 'auto';
+        let savedManuals = JSON.parse(localStorage.getItem('lumous-saved-manuals') || '[]');
+        let currentHtml = '';
+        let currentMermaidCodes = [];
+        let diagramVisible = true;
+        let editMode = false;
+
+        // Load API key
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedProvider = localStorage.getItem('lumous-api-provider') || 'groq';
+            const savedKey = localStorage.getItem('lumous-api-key');
+            document.getElementById('apiProvider').value = savedProvider;
+            if (savedKey) {
+                document.getElementById('apiKeyInput').value = savedKey;
+                document.getElementById('apiStatus').textContent = '設定済み';
+                document.getElementById('apiStatus').classList.add('connected');
+            }
+            renderSavedList();
+        });
+
+        // ===== API Key =====
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.replace(/[^\x20-\x7E]/g, '').trim();
+            const provider = document.getElementById('apiProvider').value;
+            if (!key) {
+                showToast('APIキーを入力してください');
+                return;
+            }
+            localStorage.setItem('lumous-api-key', key);
+            localStorage.setItem('lumous-api-provider', provider);
+            document.getElementById('apiStatus').textContent = '設定済み';
+            document.getElementById('apiStatus').classList.add('connected');
+            showToast('APIキーを保存しました');
+        }
+
+        // ===== Diagram Type =====
+        document.getElementById('diagramType').addEventListener('click', (e) => {
+            if (e.target.classList.contains('type-btn')) {
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+                e.target.classList.add('selected');
+                selectedType = e.target.dataset.type;
+            }
+        });
+
+        // ===== Templates =====
+        const templates = {
+            phone: 'お客様から電話が来たら、まず会社名と名前を聞きます。次に用件を確認し、既存顧客かどうかをシステムで検索します。既存顧客の場合は担当者に取り次ぎます。担当者が不在の場合は折り返し連絡先を聞いてメモを残します。新規のお客様の場合は、受付フォームに情報を記入してもらい、担当部署に連絡します。'
+        };
+
+        function useTemplate(key) {
+            document.getElementById('inputText').value = templates[key];
+        }
+
+        // ===== Generate =====
+        async function generate() {
+            const apiKey = (localStorage.getItem('lumous-api-key') || '').replace(/[^\x20-\x7E]/g, '').trim();
+            const provider = localStorage.getItem('lumous-api-provider') || 'groq';
+            if (!apiKey) {
+                showToast('先にAPIキーを設定してください');
+                return;
+            }
+
+            const input = document.getElementById('inputText').value.trim();
+            if (!input) {
+                showToast('マニュアル内容を入力してください');
+                return;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.textContent = '';
+
+            try {
+                const diagramInstruction = selectedType === 'auto'
+                    ? '内容に最適な図の種類を自動で選んでください。'
+                    : `図の種類は ${selectedType} を使用してください。`;
+
+                const prompt = `あなたはマニュアル作成の専門家です。以下の内容から、図解付きの分かりやすいマニュアルをHTML形式で作成してください。
+
+【重要: Mermaid図解のルール】
+- 図解は必ず1つだけ含めてください（複数不要）
+- ${diagramInstruction}
+- Mermaidコードは <div class="mermaid-container"><pre class="mermaid">...</pre></div> で囲んでください
+- 必ず以下のルールを守ってください:
+  * flowchart TD または flowchart LR で始めること
+  * ノードIDは英語のみ使用（例: A, B, C, step1, step2）
+  * 日本語テキストは必ず角括弧で囲む（例: A[電話を受ける]）
+  * 条件分岐は波括弧を使う（例: C{既存顧客か}）
+  * 矢印は --> のみ使う。-->|ラベル| は絶対に使わない
+  * 条件分岐の結果はノード名に含める（例: D1[はい: 担当者に繋ぐ], D2[いいえ: フォーム記入]）
+  * 丸括弧()は絶対に使わない
+  * セミコロン;は絶対に使わない
+  * 特殊文字「」『』（）を図の中で使わない
+  * 各行は1つの接続だけにする
+  * subgraphを使わない
+  * 同じノードから同じラベルで複数の矢印を出さない（例: E -->|はい| F と E -->|はい| G は禁止。F --> G のように直列にする）
+  * 条件分岐{...}からは必ず2本の矢印を出す
+  * 各ノードのテキストの先頭に内容に合った絵文字を必ず付ける。以下を参考に:
+    お客様/人/担当者 → 👤, 電話 → 📞, メール → 📧, 確認/チェック → ✅, 書類/フォーム/記入 → 📝, 検索/調べる → 🔍, 連絡/通知 → 📢, 承認/OK → ✅, 却下/NG → ❌, 開始 → ▶️, 完了/終了 → ✔️, 判断/分岐 → ❓, 報告 → 📊, 設定/PC → 💻, 保存 → 💾, 会議/相談 → 🤝, 注意/警告 → ⚠️, 待機 → ⏳, 部署/チーム → 🏢, 上司 → 👔, 研修/学習 → 📚, 面談 → 🗣️
+    上記にないものも内容に合う絵文字を自由に選んでください
+
+正しいMermaidの例:
+<div class="mermaid-container"><pre class="mermaid">
+graph TD
+    A[📞 電話を受ける] --> B[👤 名前を聞く]
+    B --> C{🔍 既存顧客か}
+    C --> D[✅ はい: 担当者に繋ぐ]
+    C --> E[📝 いいえ: 受付フォームに記入]
+</pre></div>
+
+【HTML構造のルール】
+- 見出しは <h1>, <h2>, <h3> を使う
+- 手順は <div class="step-box">...</div> で囲む
+- 注意事項は <div class="note-box">...</div> で囲む
+- 警告は <div class="warning-box">...</div> で囲む
+- 表が必要な場合は <table> を使う
+- HTMLタグのみ出力（<html>や<body>タグは不要、markdownのコードブロックも不要）
+- 日本語で作成
+- 分かりやすく、誰でも理解できる言葉で書く
+
+【内容】
+${input}`;
+
+                let html = '';
+
+                if (provider === 'groq') {
+                    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${apiKey}`
+                        },
+                        body: JSON.stringify({
+                            model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+                            messages: [{ role: 'user', content: prompt }],
+                            temperature: 0.7,
+                            max_tokens: 4096
+                        })
+                    });
+                    if (!response.ok) {
+                        const err = await response.json();
+                        throw new Error(err.error?.message || 'Groq API エラー');
+                    }
+                    const data = await response.json();
+                    html = data.choices?.[0]?.message?.content || '';
+                } else {
+                    const response = await fetch(
+                        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: [{ parts: [{ text: prompt }] }],
+                                generationConfig: { temperature: 0.7, maxOutputTokens: 4096 }
+                            })
+                        }
+                    );
+                    if (!response.ok) {
+                        const err = await response.json();
+                        throw new Error(err.error?.message || 'Gemini API エラー');
+                    }
+                    const data = await response.json();
+                    html = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                }
+
+                // Clean up markdown code fences if present
+                html = html.replace(/```html\n?/gi, '').replace(/```\n?/g, '');
+                // Fix mermaid blocks wrapped in code fences inside the HTML
+                html = html.replace(/```mermaid\s*([\s\S]*?)```/gi, function(_, code) {
+                    return '<div class="mermaid-container"><pre class="mermaid">' + code.trim() + '</pre></div>';
+                });
+
+                // Store current html
+                currentHtml = html;
+                diagramVisible = true;
+
+                // Render
+                const output = document.getElementById('outputContent');
+                output.innerHTML = `<div class="manual-output">${html}</div>`;
+
+                // Store mermaid codes before rendering
+                currentMermaidCodes = [];
+                document.querySelectorAll('.manual-output .mermaid').forEach(el => {
+                    currentMermaidCodes.push(fixMermaidCode(el.textContent));
+                });
+
+                // Render mermaid diagrams
+                await renderMermaidDiagrams();
+
+                // Show action buttons
+                document.getElementById('saveBtn').style.display = '';
+                document.getElementById('toggleBtn').style.display = '';
+                document.getElementById('editBtn').style.display = '';
+                document.getElementById('imgBtn').style.display = '';
+                document.getElementById('fullscreenBtn').style.display = '';
+                document.getElementById('videoBtn').style.display = '';
+                document.getElementById('overwriteBtn').style.display = savedManuals.length > 0 ? '' : 'none';
+
+                showToast('マニュアルを生成しました');
+
+            } catch (error) {
+                showToast('エラー: ' + error.message);
+                console.error(error);
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = 'マニュアルを生成';
+            }
+        }
+
+        // ===== Fix Mermaid Code =====
+        function fixMermaidCode(code) {
+            let fixed = code.trim();
+            // Remove markdown fences
+            fixed = fixed.replace(/^```mermaid\s*/i, '').replace(/```\s*$/, '');
+            // Replace fullwidth characters
+            fixed = fixed.replace(/（/g, ' ').replace(/）/g, ' ');
+            fixed = fixed.replace(/「/g, '').replace(/」/g, '');
+            fixed = fixed.replace(/『/g, '').replace(/』/g, '');
+            // Remove semicolons
+            fixed = fixed.replace(/;/g, '');
+            // Convert flowchart to graph
+            fixed = fixed.replace(/^flowchart\s+(TD|LR|TB|BT|RL)/m, 'graph $1');
+            if (!fixed.match(/^(graph|sequenceDiagram|stateDiagram|mindmap|gantt|pie|classDiagram)/)) {
+                fixed = 'graph TD\n' + fixed;
+            }
+            // Remove ALL edge labels -->|text| → just -->
+            fixed = fixed.replace(/-->\|[^|]*\|/g, '-->');
+            return fixed;
+        }
+
+        // ===== Render Mermaid =====
+        async function renderMermaidDiagrams() {
+            const elements = document.querySelectorAll('.manual-output .mermaid');
+            for (let i = 0; i < elements.length; i++) {
+                const el = elements[i];
+                const code = fixMermaidCode(el.textContent);
+                console.log('Mermaid code:', code);
+                try {
+                    const { svg } = await mermaid.render(`mm${Date.now()}${i}`, code);
+                    el.innerHTML = svg;
+                } catch (e) {
+                    console.warn('Mermaid render error:', e, '\nCode:', code);
+                    el.parentElement.innerHTML = `<pre style="background:#f8f9fa; padding:16px; border-radius:8px; font-size:13px; white-space:pre-wrap; border-left:4px solid #c39f59;">${code.replace(/</g,'&lt;')}</pre>`;
+                }
+            }
+        }
+
+        // ===== Save Manual =====
+        function saveManual() {
+            // If in edit mode, capture latest content
+            const manualOutput = document.querySelector('.manual-output');
+            if (manualOutput) {
+                currentHtml = manualOutput.innerHTML;
+            }
+            if (!currentHtml) {
+                showToast('保存するマニュアルがありません');
+                return;
+            }
+
+            // Replace rendered SVGs back to mermaid code for clean storage
+            const tempEl = document.createElement('div');
+            tempEl.innerHTML = currentHtml;
+            const containers = tempEl.querySelectorAll('.mermaid-container');
+            containers.forEach((container, i) => {
+                const code = currentMermaidCodes[i] || '';
+                if (code) {
+                    container.innerHTML = `<pre class="mermaid">${code}</pre>`;
+                }
+            });
+
+            const cleanHtml = tempEl.innerHTML;
+            const h1 = tempEl.querySelector('h1');
+            const title = h1 ? h1.textContent.trim() : document.getElementById('inputText').value.substring(0, 30);
+
+            const item = {
+                id: Date.now(),
+                title: title,
+                input: document.getElementById('inputText').value,
+                html: cleanHtml,
+                mermaidCodes: currentMermaidCodes,
+                date: new Date().toLocaleDateString('ja-JP')
+            };
+            savedManuals.unshift(item);
+            localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
+            renderSavedList();
+            showToast('マニュアルを保存しました');
+        }
+
+        function renderSavedList() {
+            const container = document.getElementById('savedList');
+            const searchInput = document.getElementById('savedSearch');
+            const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+            let filtered = savedManuals;
+            if (query) {
+                filtered = savedManuals.filter(item =>
+                    item.title.toLowerCase().includes(query) ||
+                    (item.input && item.input.toLowerCase().includes(query))
+                );
+            }
+
+            if (savedManuals.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px;">まだ保存がありません</div>';
+                return;
+            }
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px;">該当するマニュアルがありません</div>';
+                return;
+            }
+            container.innerHTML = filtered.map(item => `
+                <div class="history-item" onclick="loadSaved(${item.id})">
+                    <div>
+                        <div class="history-title">${item.title}</div>
+                        <div class="history-date">${item.date}</div>
+                    </div>
+                    <button class="history-delete" onclick="event.stopPropagation(); deleteSaved(${item.id})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function loadSaved(id) {
+            const item = savedManuals.find(h => h.id === id);
+            if (!item) return;
+            document.getElementById('inputText').value = item.input;
+            currentHtml = item.html;
+            currentMermaidCodes = item.mermaidCodes || [];
+            diagramVisible = true;
+            const output = document.getElementById('outputContent');
+            output.innerHTML = `<div class="manual-output">${item.html}</div>`;
+            renderMermaidDiagrams();
+            document.getElementById('saveBtn').style.display = '';
+            document.getElementById('toggleBtn').style.display = '';
+            document.getElementById('editBtn').style.display = '';
+            document.getElementById('imgBtn').style.display = '';
+            document.getElementById('fullscreenBtn').style.display = '';
+            document.getElementById('videoBtn').style.display = '';
+            document.getElementById('overwriteBtn').style.display = savedManuals.length > 0 ? '' : 'none';
+            showToast('マニュアルを読み込みました');
+        }
+
+        function deleteSaved(id) {
+            savedManuals = savedManuals.filter(h => h.id !== id);
+            localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
+            renderSavedList();
+            showToast('削除しました');
+        }
+
+        function clearAllSaved() {
+            if (!confirm('保存済みマニュアルをすべて削除しますか？')) return;
+            savedManuals = [];
+            localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
+            renderSavedList();
+            showToast('すべて削除しました');
+        }
+
+        // ===== Overwrite Existing Manual =====
+        function openOverwriteModal() {
+            if (savedManuals.length === 0) {
+                showToast('保存済みマニュアルがありません');
+                return;
+            }
+            document.getElementById('overwriteModalOverlay').style.display = 'flex';
+            document.getElementById('overwriteSearch').value = '';
+            renderOverwriteList();
+        }
+
+        function closeOverwriteModal() {
+            document.getElementById('overwriteModalOverlay').style.display = 'none';
+        }
+
+        function renderOverwriteList() {
+            const container = document.getElementById('overwriteList');
+            const query = (document.getElementById('overwriteSearch').value || '').trim().toLowerCase();
+            let filtered = savedManuals;
+            if (query) {
+                filtered = savedManuals.filter(item =>
+                    item.title.toLowerCase().includes(query) ||
+                    (item.input && item.input.toLowerCase().includes(query))
+                );
+            }
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);">該当なし</div>';
+                return;
+            }
+            container.innerHTML = filtered.map(item => `
+                <div class="history-item" onclick="overwriteManual(${item.id})" style="cursor:pointer;">
+                    <div>
+                        <div class="history-title">${item.title}</div>
+                        <div class="history-date">${item.date}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function overwriteManual(id) {
+            const item = savedManuals.find(h => h.id === id);
+            if (!item) return;
+
+            // Clean current content: replace SVGs with mermaid codes
+            const manualOutput = document.querySelector('.manual-output');
+            if (!manualOutput) return;
+
+            const tempEl = document.createElement('div');
+            tempEl.innerHTML = manualOutput.innerHTML;
+            tempEl.querySelectorAll('.mermaid-container').forEach((container, i) => {
+                const code = currentMermaidCodes[i] || '';
+                if (code) {
+                    container.innerHTML = `<pre class="mermaid">${code}</pre>`;
+                }
+            });
+            const indicator = tempEl.querySelector('.edit-indicator');
+            if (indicator) indicator.remove();
+
+            // Update with new content
+            const h1 = tempEl.querySelector('h1');
+            item.title = h1 ? h1.textContent.trim() : item.title;
+            item.html = tempEl.innerHTML;
+            item.input = document.getElementById('inputText').value;
+            item.mermaidCodes = currentMermaidCodes;
+            item.date = new Date().toLocaleDateString('ja-JP');
+
+            localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
+            renderSavedList();
+            closeOverwriteModal();
+            showToast(`「${item.title}」を上書き保存しました`);
+        }
+
+        // ===== Toggle Diagram ↔ Text =====
+        function toggleDiagramText() {
+            const containers = document.querySelectorAll('.manual-output .mermaid-container');
+            if (containers.length === 0) {
+                showToast('図解がありません');
+                return;
+            }
+            diagramVisible = !diagramVisible;
+            containers.forEach((container, i) => {
+                if (diagramVisible) {
+                    // Show diagram: restore mermaid and render
+                    const code = currentMermaidCodes[i] || '';
+                    container.innerHTML = `<pre class="mermaid">${code}</pre>`;
+                    renderMermaidDiagrams();
+                } else {
+                    // Show text: show mermaid code as plain text
+                    const code = currentMermaidCodes[i] || '';
+                    container.innerHTML = `<pre style="background:#f8f9fa; padding:16px; border-radius:8px; font-size:13px; white-space:pre-wrap; border-left:4px solid #c39f59; text-align:left;">${code.replace(/</g,'&lt;')}</pre>`;
+                }
+            });
+            document.getElementById('toggleBtn').textContent = diagramVisible ? '図 → テキスト' : 'テキスト → 図';
+        }
+
+        // ===== Actions =====
+        function printManual() {
+            window.print();
+        }
+
+        function copyManual() {
+            const output = document.getElementById('outputContent');
+            const text = output.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('コピーしました');
+            });
+        }
+
+        // ===== Toast =====
+        // ===== Fullscreen =====
+        function toggleFullscreen() {
+            const panel = document.querySelector('.output-panel');
+            const btn = document.getElementById('fullscreenBtn');
+            panel.classList.toggle('fullscreen');
+            if (panel.classList.contains('fullscreen')) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        }
+
+        // ESCキーで全画面解除
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const panel = document.querySelector('.output-panel');
+                if (panel.classList.contains('fullscreen')) {
+                    toggleFullscreen();
+                }
+            }
+        });
+
+        // ===== Edit Mode =====
+        function toggleEdit() {
+            editMode = !editMode;
+            const outputContent = document.getElementById('outputContent');
+            const btn = document.getElementById('editBtn');
+            const manualOutput = outputContent.querySelector('.manual-output');
+
+            if (!manualOutput) return;
+
+            if (editMode) {
+                outputContent.classList.add('editing');
+                btn.classList.add('active');
+
+                // Add edit indicator
+                const indicator = document.createElement('div');
+                indicator.className = 'edit-indicator';
+                indicator.id = 'editIndicator';
+                indicator.textContent = '編集モード：文字をクリックして編集 / 図をクリックで図を編集 / 画像はドラッグ&ドロップまたは貼り付け';
+                manualOutput.insertBefore(indicator, manualOutput.firstChild);
+
+                // Make text elements editable
+                manualOutput.querySelectorAll('h1, h2, h3, p, li, td, th, .step-box, .note-box, .warning-box').forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                });
+
+                // Make diagrams clickable for editing
+                manualOutput.querySelectorAll('.mermaid-container').forEach((container, i) => {
+                    container.classList.add('editable-hint');
+                    container._diagramClickHandler = function() { openDiagramEditor(container, i); };
+                    container.addEventListener('click', container._diagramClickHandler);
+                });
+            } else {
+                outputContent.classList.remove('editing');
+                btn.classList.remove('active');
+
+                // Remove indicator
+                const indicator = document.getElementById('editIndicator');
+                if (indicator) indicator.remove();
+
+                // Remove contenteditable
+                manualOutput.querySelectorAll('[contenteditable]').forEach(el => {
+                    el.removeAttribute('contenteditable');
+                });
+
+                // Remove diagram click handlers
+                manualOutput.querySelectorAll('.mermaid-container').forEach(container => {
+                    container.classList.remove('editable-hint');
+                    if (container._diagramClickHandler) {
+                        container.removeEventListener('click', container._diagramClickHandler);
+                    }
+                });
+
+                // Update currentHtml with edited content
+                currentHtml = manualOutput.innerHTML;
+                showToast('編集内容を反映しました');
+            }
+        }
+
+        // ===== Diagram Editor =====
+        function openDiagramEditor(container, index) {
+            const code = currentMermaidCodes[index] || '';
+
+            // Save original content for cancel
+            const originalHtml = container.innerHTML;
+
+            // Create editor UI
+            container.innerHTML = `
+                <div class="diagram-edit-area">
+                    <textarea id="diagramCodeEdit">${code}</textarea>
+                    <div class="diagram-edit-actions">
+                        <button class="btn-rerender" onclick="reRenderDiagram(this, ${index})">図を更新</button>
+                        <button class="btn-add-img-to-diagram" onclick="addImageToDiagram(this)">画像を貼り付け</button>
+                        <button class="btn-diagram-cancel" onclick="cancelDiagramEdit(this, ${index})">キャンセル</button>
+                    </div>
+                    <input type="file" class="diagram-img-input" accept="image/*" style="display:none;" onchange="handleDiagramImage(event, this)">
+                </div>
+            `;
+            container._originalHtml = originalHtml;
+            container.classList.remove('editable-hint');
+            container.removeEventListener('click', container._diagramClickHandler);
+        }
+
+        async function reRenderDiagram(btn, index) {
+            const container = btn.closest('.mermaid-container');
+            const textarea = container.querySelector('#diagramCodeEdit');
+            const newCode = fixMermaidCode(textarea.value);
+            currentMermaidCodes[index] = newCode;
+
+            container.innerHTML = `<pre class="mermaid">${newCode}</pre>`;
+
+            try {
+                const el = container.querySelector('.mermaid');
+                const { svg } = await mermaid.render(`mm-edit-${Date.now()}-${index}`, newCode);
+                el.innerHTML = svg;
+                showToast('図を更新しました');
+            } catch (e) {
+                console.warn('Re-render error:', e);
+                container.innerHTML = `<pre style="background:#f8f9fa; padding:16px; border-radius:8px; font-size:13px; white-space:pre-wrap; border-left:4px solid #c39f59;">${newCode.replace(/</g,'&lt;')}</pre><p style="color:#ef4444; font-size:12px; margin-top:8px;">コードにエラーがあります。修正してください。</p>`;
+            }
+
+            // Re-add click handler if still in edit mode
+            if (editMode) {
+                container.classList.add('editable-hint');
+                container._diagramClickHandler = function() { openDiagramEditor(container, index); };
+                container.addEventListener('click', container._diagramClickHandler);
+            }
+
+            currentHtml = document.querySelector('.manual-output').innerHTML;
+        }
+
+        function cancelDiagramEdit(btn, index) {
+            const container = btn.closest('.mermaid-container');
+            if (container._originalHtml) {
+                container.innerHTML = container._originalHtml;
+            }
+            // Re-add click handler
+            if (editMode) {
+                container.classList.add('editable-hint');
+                container._diagramClickHandler = function() { openDiagramEditor(container, index); };
+                container.addEventListener('click', container._diagramClickHandler);
+            }
+        }
+
+        function addImageToDiagram(btn) {
+            const container = btn.closest('.mermaid-container');
+            const input = container.querySelector('.diagram-img-input');
+            input.click();
+        }
+
+        function handleDiagramImage(event, input) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const container = input.closest('.mermaid-container');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'image-wrapper';
+                wrapper.innerHTML = `<img src="${e.target.result}" class="inserted-image" alt="図解画像"><button class="img-delete" onclick="this.parentElement.remove()">×</button>`;
+
+                // Insert after the diagram container
+                container.parentNode.insertBefore(wrapper, container.nextSibling);
+                currentHtml = document.querySelector('.manual-output').innerHTML;
+                showToast('画像を挿入しました');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ===== Image Upload =====
+        function addImage() {
+            document.getElementById('imageInput').click();
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            insertImageFile(file);
+            event.target.value = '';
+        }
+
+        function insertImageFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                insertImageAtCursor(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function insertImageAtCursor(dataUrl) {
+            const manualOutput = document.querySelector('.manual-output');
+            if (!manualOutput) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'image-wrapper';
+            wrapper.innerHTML = `<img src="${dataUrl}" class="inserted-image" alt="挿入画像"><button class="img-delete" onclick="this.parentElement.remove()">×</button>`;
+
+            // Insert at end or at cursor position
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0 && manualOutput.contains(selection.anchorNode)) {
+                const range = selection.getRangeAt(0);
+                let targetNode = range.startContainer;
+                while (targetNode && targetNode.parentNode !== manualOutput) {
+                    targetNode = targetNode.parentNode;
+                }
+                if (targetNode) {
+                    manualOutput.insertBefore(wrapper, targetNode.nextSibling);
+                } else {
+                    manualOutput.appendChild(wrapper);
+                }
+            } else {
+                manualOutput.appendChild(wrapper);
+            }
+
+            // Update currentHtml
+            currentHtml = manualOutput.innerHTML;
+            showToast('画像を挿入しました');
+        }
+
+        // ===== Video Upload =====
+        function addVideo() {
+            document.getElementById('videoInput').click();
+        }
+
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            insertVideoFile(file);
+            event.target.value = '';
+        }
+
+        function insertVideoFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const manualOutput = document.querySelector('.manual-output');
+                if (!manualOutput) return;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'video-wrapper';
+                wrapper.innerHTML = `<video src="${e.target.result}" controls></video><button class="vid-delete" onclick="this.parentElement.remove()">×</button>`;
+
+                // Insert at cursor or end
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0 && manualOutput.contains(selection.anchorNode)) {
+                    const range = selection.getRangeAt(0);
+                    let targetNode = range.startContainer;
+                    while (targetNode && targetNode.parentNode !== manualOutput) {
+                        targetNode = targetNode.parentNode;
+                    }
+                    if (targetNode) {
+                        manualOutput.insertBefore(wrapper, targetNode.nextSibling);
+                    } else {
+                        manualOutput.appendChild(wrapper);
+                    }
+                } else {
+                    manualOutput.appendChild(wrapper);
+                }
+
+                currentHtml = manualOutput.innerHTML;
+                showToast('動画を挿入しました');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ===== Drag & Drop + Paste Images =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const outputContent = document.getElementById('outputContent');
+
+            // Drag and drop
+            outputContent.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                if (editMode) outputContent.style.outline = '3px dashed var(--primary-light)';
+            });
+            outputContent.addEventListener('dragleave', function() {
+                outputContent.style.outline = '';
+            });
+            outputContent.addEventListener('drop', function(e) {
+                e.preventDefault();
+                outputContent.style.outline = '';
+                if (!editMode) {
+                    showToast('画像を挿入するには編集モードにしてください');
+                    return;
+                }
+                const files = e.dataTransfer.files;
+                for (const file of files) {
+                    if (file.type.startsWith('image/')) {
+                        insertImageFile(file);
+                    } else if (file.type.startsWith('video/')) {
+                        insertVideoFile(file);
+                    }
+                }
+            });
+
+            // Paste from clipboard
+            outputContent.addEventListener('paste', function(e) {
+                if (!editMode) return;
+                const items = e.clipboardData.items;
+                for (const item of items) {
+                    if (item.type.startsWith('image/')) {
+                        e.preventDefault();
+                        const file = item.getAsFile();
+                        insertImageFile(file);
+                        return;
+                    }
+                }
+            });
+        });
+
+        // ===== GitHub Backup =====
+        async function backupToGithub() {
+            const status = document.getElementById('backupStatus');
+            status.textContent = 'バックアップ中...';
+            status.style.color = 'var(--primary)';
+
+            try {
+                const data = {
+                    savedManuals: savedManuals,
+                    apiProvider: localStorage.getItem('lumous-api-provider')
+                };
+
+                const response = await fetch('/api/backup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    status.textContent = result.message;
+                    status.style.color = '#10b981';
+                    showToast(result.message);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (e) {
+                status.textContent = 'エラー: ' + e.message;
+                status.style.color = '#ef4444';
+                showToast('バックアップ失敗');
+            }
+        }
+
+        async function restoreFromGithub() {
+            const status = document.getElementById('backupStatus');
+            status.textContent = '復元中...';
+            status.style.color = 'var(--primary)';
+
+            try {
+                const response = await fetch('/api/restore');
+                const data = await response.json();
+
+                if (!data) {
+                    status.textContent = 'バックアップデータがありません';
+                    status.style.color = 'var(--text-muted)';
+                    return;
+                }
+
+                if (data.savedManuals) {
+                    savedManuals = data.savedManuals;
+                    localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
+                    renderSavedList();
+                }
+                if (data.apiProvider) {
+                    localStorage.setItem('lumous-api-provider', data.apiProvider);
+                    document.getElementById('apiProvider').value = data.apiProvider;
+                }
+                document.getElementById('apiStatus').textContent = '設定済み';
+                document.getElementById('apiStatus').classList.add('connected');
+
+                status.textContent = '復元しました';
+                status.style.color = '#10b981';
+                showToast('データを復元しました');
+            } catch (e) {
+                status.textContent = 'エラー: ' + e.message;
+                status.style.color = '#ef4444';
+                showToast('復元失敗');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>
