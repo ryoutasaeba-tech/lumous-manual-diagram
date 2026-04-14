@@ -1,4 +1,27 @@
 {
-  "savedManuals": [],
+  "savedManuals": [
+    {
+      "id": 1775728155725,
+      "title": "発送業務マニュアル(ラベル編）",
+      "input": "商品梱包作業　商品を確認し　アマゾンの商品かどうか確認　アマゾンではない場合　商品の大きさ確認　2cm以内はそのまま印刷したラベルを使う　2cm超え３cm以内はクリックポストを利用するhttps://clickpost.jp/mypage/index 3cm超えは印刷した宛名ラベルをそのまま利用　\nアマゾンの場合　アマゾンの場合は追跡番号が必要なので、3cm以内はクリックポストhttps://clickpost.jp/mypage/index　3cm超えはパソコンのデスクトップにあるゆうパックプリントRを利用してラベルを作成する　",
+      "html": "<h1>発送業務マニュアル(ラベル編）</h1>\n\n<h2>商品の確認とラベル作成手順</h2>\n\n<div class=\"step-box\">\n  <h3>ステップ1: 商品を確認する</h3>\n  <p>まず、商品がアマゾンの商品かどうかを確認します。</p><p>宛名ラベルの販売場所で確認します。</p><p><br></p>\n  <div class=\"mermaid-container\"><pre class=\"mermaid\">graph TD\n    A[📦 商品を確認する] --&gt; B{❓ アマゾンの商品か}\n    B --&gt;|はい| C[👉 アマゾンの場合の処理に進む]\n    B --&gt;|いいえ| D[👉 アマゾン以外の商品の処理に進む]</pre></div>\n</div>\n\n<div class=\"step-box\">\n  <h3>ステップ2: アマゾン以外の商品の処理</h3>\n  <p>商品がアマゾンの商品でない場合、商品の大きさを確認します。</p><p>2cm超え3cm以内 →クリックポスト&nbsp;<a href=\"https://clickpost.jp/mypage/index\" target=\"_blank\">https://clickpost.jp/mypage/index</a></p>\n  <div class=\"mermaid-container\"><pre class=\"mermaid\">graph TD\n    E[📏 商品の大きさを確認する] --&gt; F{🤔 2cm以内か}\n    F --&gt;|はい| G[📝 そのまま印刷したラベルを使用する]\n    F --&gt;|いいえ| H{🤔 2cm超え3cm以内か}\n    H --&gt;|はい| I[🔗 クリックポストを利用してラベルを作成する]\n    H --&gt;|いいえ| J[📝 印刷した宛名ラベルをそのまま使用する]</pre></div>\n</div>\n\n<div class=\"step-box\">\n  <h3>ステップ3: アマゾンの商品の処理</h3>\n  <p>商品がアマゾンの商品の場合、追跡番号が必要なので、クリックポストまたはゆうパックプリントRを利用してラベルを作成します。</p>\n  <div class=\"mermaid-container\"><pre class=\"mermaid\">graph TD\n    K[📏 商品の大きさを確認する] --&gt; L{🤔 3cm以内か}\n    L --&gt;|はい| M[🔗 クリックポストを利用してラベルを作成する]\n    L --&gt;|いいえ| N[🖥️ ゆうパックプリントRでラベルを作成する]</pre></div>\n</div>\n\n<div class=\"note-box\">\n  <h3>注意事項</h3>\n  <p>商品の大きさによってラベル作成方法が異なりますので、正確に確認してください。</p>\n</div>\n\n<div class=\"warning-box\">\n  <h3>警告</h3>\n  <p>ラベル作成時に商品の大きさを誤って判断すると、配送トラブルにつながる可能性があります。</p>\n</div>",
+      "mermaidCodes": [
+        "graph TD\n    A[📦 商品を確認する] --> B{❓ アマゾンの商品か}\n    B -->|はい| C[👉 アマゾンの場合の処理に進む]\n    B -->|いいえ| D[👉 アマゾン以外の商品の処理に進む]",
+        "graph TD\n    E[📏 商品の大きさを確認する] --> F{🤔 2cm以内か}\n    F -->|はい| G[📝 そのまま印刷したラベルを使用する]\n    F -->|いいえ| H{🤔 2cm超え3cm以内か}\n    H -->|はい| I[🔗 クリックポストを利用してラベルを作成する]\n    H -->|いいえ| J[📝 印刷した宛名ラベルをそのまま使用する]",
+        "graph TD\n    K[📏 商品の大きさを確認する] --> L{🤔 3cm以内か}\n    L -->|はい| M[🔗 クリックポストを利用してラベルを作成する]\n    L -->|いいえ| N[🖥️ ゆうパックプリントRでラベルを作成する]"
+      ],
+      "date": "2026/4/10"
+    },
+    {
+      "id": 1775717133543,
+      "title": "発送業務マニュアル(商品確認編)",
+      "input": "発送業務マニュアル　最初の宛名ラベルを開くhttps://docs.google.com/spreadsheets/d/1NSpm231CjkMTzZSDesNS3aRZHE2XMVdRUAGgzQ1mgmk/edit?gid=859509031#gid=859509031宛名ラベル印刷用を開く範囲指定して印刷をする　商品名をコピーして在庫システムで検索をかける　在庫システムに表示されたSKUを確認　ブリキ看板の場合　SKUのBuri-DESI-K1-39と表記がある場合3個目のアルファベットを確認して　同じ表記のある段ボールからブリキ看板をさがしてくる　3個目にアルファベットがない場合　ブリキ看板の絵を確認して　店舗に貼り付けてあるブリキ看板から探してくる　天井・壁　ブリキ看板以外の商品の場合　画像を確認して店舗の棚から商品を探す　ムーミン商品は基本1階にある　それ以外は1階と2階から探す　ムーミン以外の商品は2階にあることが多い",
+      "html": "<h1>発送業務マニュアル(商品確認編)</h1>\n\n<h2>最初の宛名ラベルを開く</h2>\n\n<div class=\"step-box\">\n  <p>宛名ラベル印刷用を開く: <a href=\"https://docs.google.com/spreadsheets/d/1NSpm231CjkMTzZSDesNS3aRZHE2XMVdRUAGgzQ1mgmk/edit?gid=859509031#gid=859509031\" target=\"_blank\">Googleスプレッドシート</a></p>\n</div>\n\n<h2>範囲指定して印刷をする</h2>\n\n<div class=\"step-box\">\n  <p>範囲を指定して印刷をかけます。</p><div class=\"video-wrapper\"><video src=\"\" controls=\"\" data-video-id=\"vid_1775815064105_23jade\"></video><button class=\"vid-delete\" onclick=\"this.parentElement.remove()\">×</button></div>\n</div>\n\n<h2>商品名をコピーして在庫システムで検索をかける</h2>\n\n<div class=\"step-box\">\n  <p>在庫システムを開く：<span style=\"background-color: rgb(248, 249, 250);\"><a href=\"https://quiet-treacle-b4e5e7.netlify.app/\" target=\"_blank\">https://quiet-treacle-b4e5e7.netlify.app/</a></span></p><p>商品名をコピーして在庫システムで検索をかけます。</p>\n</div><div class=\"video-wrapper\"><video src=\"\" controls=\"\" data-video-id=\"vid_1775815064384_6ux0jc\"></video><button class=\"vid-delete\" onclick=\"this.parentElement.remove()\">×</button></div>\n\n<h2>在庫システムに表示されたSKUを確認</h2>\n\n<div class=\"step-box\">\n  <p>在庫システムに表示されたSKUを確認します。</p>\n</div>\n\n<div class=\"mermaid-container\"><pre class=\"mermaid\">graph TD\n  A[📝 SKUを確認] --&gt; B{🔍 ブリキ看板か}\n  B --&gt;|はい| C[📝 3個目のアルファベットを確認]\n  B --&gt;|いいえ| D[📸 画像を確認]\n  C --&gt;|アルファベットあり| E[👀 同じ表記のある段ボールから探す]\n  C --&gt;|アルファベットなし| F[📸 ブリキ看板の絵を確認]\n  D --&gt; G[🏢 店舗の棚から商品を探す]\n  E --&gt; H[✔️ 商品を発送]\n  F --&gt; I[🏢 店舗に貼り付けてあるブリキ看板から探す]\n  G --&gt; H\n  I --&gt; H</pre></div>\n\n<h2>注意事項</h2>\n\n<div class=\"note-box\">\n  <p>ムーミン商品は基本1階にある。それ以外は1階と2階から探す。</p>\n  <p>ムーミン以外の商品は2階にあることが多い。</p>\n</div>\n\n<h2>警告</h2>\n\n<div class=\"warning-box\">\n  <p>SKUの表記が異なる場合があるので注意する。</p>\n</div>",
+      "mermaidCodes": [
+        "graph TD\n  A[📝 SKUを確認] --> B{🔍 ブリキ看板か}\n  B -->|はい| C[📝 3個目のアルファベットを確認]\n  B -->|いいえ| D[📸 画像を確認]\n  C -->|アルファベットあり| E[👀 同じ表記のある段ボールから探す]\n  C -->|アルファベットなし| F[📸 ブリキ看板の絵を確認]\n  D --> G[🏢 店舗の棚から商品を探す]\n  E --> H[✔️ 商品を発送]\n  F --> I[🏢 店舗に貼り付けてあるブリキ看板から探す]\n  G --> H\n  I --> H"
+      ],
+      "date": "2026/4/10"
+    }
+  ],
   "apiProvider": "groq"
 }

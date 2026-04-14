@@ -113,7 +113,7 @@
 
         /* ===== Main Layout ===== */
         .main {
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 32px;
             display: flex;
@@ -127,6 +127,41 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            transition: width 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .input-panel.collapsed {
+            width: 0;
+            opacity: 0;
+            padding: 0;
+            gap: 0;
+            pointer-events: none;
+        }
+
+        .input-toggle-btn {
+            position: fixed;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 64px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(104, 80, 33, 0.3);
+            transition: var(--transition);
+        }
+
+        .input-toggle-btn:hover {
+            width: 38px;
         }
 
         .panel-card {
@@ -267,6 +302,134 @@
             border-color: var(--primary-light);
             transform: translateX(4px);
             box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        /* ===== Link Panel (Right) ===== */
+        .link-panel {
+            width: 280px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .link-panel .panel-card {
+            position: sticky;
+            top: 32px;
+        }
+
+        .link-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            transition: var(--transition);
+        }
+
+        .link-item:hover {
+            border-color: var(--primary-light);
+        }
+
+        .link-item-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .link-item a {
+            color: var(--primary-light);
+            text-decoration: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .link-item a:hover {
+            text-decoration: underline;
+        }
+
+        .link-item-delete {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .link-item-delete:hover {
+            color: #ef4444;
+        }
+
+        .link-add-form {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .link-add-form input {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-family: inherit;
+        }
+
+        .link-add-form input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+        }
+
+        .link-add-btn {
+            padding: 6px 12px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .link-add-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(104, 80, 33, 0.3);
+        }
+
+        .link-empty {
+            text-align: center;
+            padding: 16px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .link-badge {
+            display: inline-block;
+            background: var(--primary-gradient);
+            color: white;
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            margin-left: 4px;
         }
 
         /* ===== Output Panel ===== */
@@ -460,6 +623,16 @@
             color: var(--primary);
         }
 
+        .manual-output a {
+            color: var(--primary);
+            text-decoration: underline;
+            word-break: break-all;
+        }
+
+        .manual-output a:hover {
+            color: var(--primary-light);
+        }
+
         .manual-output .mermaid-container {
             background: var(--bg-light);
             border: 1px solid var(--border);
@@ -554,6 +727,13 @@
             color: var(--text-muted);
         }
 
+        .history-actions {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .history-rename,
         .history-delete {
             background: none;
             border: none;
@@ -562,6 +742,10 @@
             font-size: 16px;
             padding: 4px;
             transition: var(--transition);
+        }
+
+        .history-rename:hover {
+            color: var(--primary-light);
         }
 
         .history-delete:hover {
@@ -592,7 +776,7 @@
 
         /* ===== Print ===== */
         @media print {
-            .header, .input-panel, .output-actions, .toast {
+            .header, .input-panel, .output-actions, .toast, .link-panel, .input-toggle-btn {
                 display: none !important;
             }
             .main {
@@ -608,6 +792,11 @@
         }
 
         /* ===== Responsive ===== */
+        @media (max-width: 1200px) {
+            .link-panel {
+                width: 220px;
+            }
+        }
         @media (max-width: 900px) {
             .main {
                 flex-direction: column;
@@ -616,12 +805,27 @@
             .input-panel {
                 width: 100%;
             }
+            .input-panel.collapsed {
+                width: 100%;
+                height: 0;
+            }
+            .link-panel {
+                width: 100%;
+            }
             .header-inner {
                 flex-direction: column;
                 gap: 12px;
             }
             .api-key-input {
                 width: 200px;
+            }
+            .input-toggle-btn {
+                position: static;
+                transform: none;
+                width: 100%;
+                height: 36px;
+                border-radius: var(--radius-sm);
+                margin-bottom: 8px;
             }
         }
 
@@ -862,6 +1066,25 @@
             display: flex;
         }
 
+        .inline-video-btn {
+            display: block;
+            margin: 4px 0;
+            padding: 4px 12px;
+            font-size: 12px;
+            color: var(--primary-light);
+            background: transparent;
+            border: 1px dashed var(--primary-light);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .inline-video-btn:hover {
+            opacity: 1;
+            background: rgba(195, 159, 89, 0.08);
+        }
+
         /* Hide mermaid error messages */
         #d-mermaid, [id^="dmermaid"], .error-icon, .mermaid .error-text {
             display: none !important;
@@ -895,10 +1118,13 @@
         </div>
     </header>
 
+    <!-- Input Toggle Button -->
+    <button class="input-toggle-btn" id="inputToggleBtn" onclick="toggleInputPanel()" title="入力パネル">&#x25B6;</button>
+
     <!-- Main -->
     <div class="main">
         <!-- Input Panel -->
-        <div class="input-panel">
+        <div class="input-panel collapsed" id="inputPanel">
             <div class="panel-card">
                 <h3 class="panel-title">図解の種類</h3>
                 <div class="diagram-type" id="diagramType">
@@ -943,6 +1169,18 @@
                 </div>
                 <p id="backupStatus" style="font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: center;"></p>
             </div>
+
+            <!-- Export / Import -->
+            <div class="panel-card">
+                <h3 class="panel-title">エクスポート / インポート</h3>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">全マニュアルをJSONファイルで書き出し・復元できます</p>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-action" onclick="exportAllAsJson()" style="flex:1; padding: 10px; font-size: 13px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer;">エクスポート</button>
+                    <button class="btn-action" onclick="document.getElementById('jsonImportInput').click()" style="flex:1; padding: 10px; font-size: 13px; background: var(--bg-light); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;">インポート</button>
+                </div>
+                <input type="file" id="jsonImportInput" accept=".json" style="display:none;" onchange="importFromJson(event)">
+                <p id="exportStatus" style="font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: center;"></p>
+            </div>
         </div>
 
         <!-- Output Panel -->
@@ -955,6 +1193,7 @@
                 <button class="btn-icon" onclick="addImage()" id="imgBtn" style="display:none;"><span>&#x1F5BC;</span><span class="tooltip">画像追加</span></button>
                 <button class="btn-icon" onclick="addVideo()" id="videoBtn" style="display:none;"><span>&#x1F3AC;</span><span class="tooltip">動画追加</span></button>
                 <div class="toolbar-sep"></div>
+                <button class="btn-icon" onclick="downloadManualAsHtml()" id="downloadHtmlBtn"><span>&#x1F4E5;</span><span class="tooltip">HTMLダウンロード</span></button>
                 <button class="btn-icon" onclick="printManual()"><span>&#x1F5A8;</span><span class="tooltip">印刷 / PDF</span></button>
                 <button class="btn-icon" onclick="copyManual()"><span>&#x1F4CB;</span><span class="tooltip">コピー</span></button>
                 <div class="btn-save-group">
@@ -968,8 +1207,23 @@
             <div class="output-content" id="outputContent">
                 <div class="output-placeholder">
                     <div class="output-placeholder-icon">&#128196;</div>
-                    <p>左のテキストエリアにマニュアルの内容を入力し<br>「マニュアルを生成」をクリックしてください</p>
+                    <p>左の「▶」ボタンで入力パネルを開き<br>マニュアルの内容を入力して生成してください</p>
                     <p style="font-size: 13px;">AIが自動で図解付きマニュアルを作成します</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Link Panel (Right) -->
+        <div class="link-panel">
+            <div class="panel-card">
+                <h3 class="panel-title">リンク一覧 <span class="link-badge" id="linkCount">0</span></h3>
+                <div class="link-list" id="linkList">
+                    <div class="link-empty">リンクはまだありません</div>
+                </div>
+                <div class="link-add-form">
+                    <input type="text" id="linkAddName" placeholder="リンク名">
+                    <input type="text" id="linkAddUrl" placeholder="URL (https://...)">
+                    <button class="link-add-btn" onclick="addManualLink()">+ リンクを追加</button>
                 </div>
             </div>
         </div>
@@ -978,10 +1232,24 @@
     <!-- Overwrite Modal -->
     <div id="overwriteModalOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:1000;">
         <div style="background:var(--bg-white);border-radius:var(--radius);padding:32px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-            <h2 style="font-size:20px;font-weight:300;color:var(--primary);margin-bottom:20px;letter-spacing:1px;">上書き先を選択</h2>
-            <input type="text" id="overwriteSearch" class="input-field" placeholder="検索..." oninput="renderOverwriteList()" style="margin-bottom:12px;padding:10px 14px;font-size:13px;">
-            <div id="overwriteList" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;"></div>
-            <div style="display:flex;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+            <!-- Step 1: Select -->
+            <div id="overwriteStep1">
+                <h2 style="font-size:20px;font-weight:300;color:var(--primary);margin-bottom:20px;letter-spacing:1px;">上書き先を選択</h2>
+                <input type="text" id="overwriteSearch" class="input-field" placeholder="検索..." oninput="renderOverwriteList()" style="margin-bottom:12px;padding:10px 14px;font-size:13px;">
+                <div id="overwriteList" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;"></div>
+            </div>
+            <!-- Step 2: Confirm -->
+            <div id="overwriteStep2" style="display:none;">
+                <h2 style="font-size:20px;font-weight:300;color:var(--primary);margin-bottom:20px;letter-spacing:1px;">上書き確認</h2>
+                <div id="overwriteConfirmInfo" style="padding:16px;background:var(--bg-light);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:20px;">
+                </div>
+                <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">このマニュアルを現在の内容で上書きします。よろしいですか？</p>
+                <div style="display:flex;gap:8px;justify-content:flex-end;">
+                    <button class="btn-action" onclick="overwriteGoBack()" style="padding:10px 20px;">戻る</button>
+                    <button class="btn-save primary" onclick="overwriteConfirm()" style="padding:10px 24px;font-size:14px;">OK - 上書き保存</button>
+                </div>
+            </div>
+            <div id="overwriteFooter" style="display:flex;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
                 <button class="btn-action" onclick="closeOverwriteModal()">キャンセル</button>
             </div>
         </div>
@@ -1013,9 +1281,99 @@
         let currentMermaidCodes = [];
         let diagramVisible = true;
         let editMode = false;
+        let _inlineVideoTarget = null;
+        let _inlineImageTarget = null;
+        let manualLinks = [];
+        let linkNameOverrides = JSON.parse(localStorage.getItem('lumous-link-names') || '{}');
 
-        // Load API key
-        window.addEventListener('DOMContentLoaded', () => {
+        // ===== IndexedDB for video storage =====
+        let videoDB = null;
+        function openVideoDB() {
+            return new Promise((resolve, reject) => {
+                if (videoDB) { resolve(videoDB); return; }
+                const req = indexedDB.open('lumous-videos', 1);
+                req.onupgradeneeded = e => { e.target.result.createObjectStore('videos'); };
+                req.onsuccess = e => { videoDB = e.target.result; resolve(videoDB); };
+                req.onerror = e => reject(e);
+            });
+        }
+        async function saveVideoToDB(id, dataUrl) {
+            const db = await openVideoDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction('videos', 'readwrite');
+                tx.objectStore('videos').put(dataUrl, id);
+                tx.oncomplete = () => resolve();
+                tx.onerror = e => reject(e);
+            });
+        }
+        async function getVideoFromDB(id) {
+            const db = await openVideoDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction('videos', 'readonly');
+                const req = tx.objectStore('videos').get(id);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = e => reject(e);
+            });
+        }
+        async function deleteVideoFromDB(id) {
+            const db = await openVideoDB();
+            return new Promise((resolve) => {
+                const tx = db.transaction('videos', 'readwrite');
+                tx.objectStore('videos').delete(id);
+                tx.oncomplete = () => resolve();
+            });
+        }
+
+        // Strip video data URLs from HTML, save them to IndexedDB, return clean HTML
+        async function stripVideosForStorage(html) {
+            const tempEl = document.createElement('div');
+            tempEl.innerHTML = html;
+            const videos = tempEl.querySelectorAll('.video-wrapper video');
+            for (const video of videos) {
+                const src = video.getAttribute('src');
+                if (src && src.startsWith('data:')) {
+                    const vid = 'vid_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                    await saveVideoToDB(vid, src);
+                    video.setAttribute('src', '');
+                    video.setAttribute('data-video-id', vid);
+                }
+            }
+            return tempEl.innerHTML;
+        }
+
+        // Restore video data URLs from IndexedDB into HTML
+        async function restoreVideosInElement(container) {
+            const videos = container.querySelectorAll('video[data-video-id]');
+            for (const video of videos) {
+                const vid = video.getAttribute('data-video-id');
+                if (vid) {
+                    const dataUrl = await getVideoFromDB(vid);
+                    if (dataUrl) {
+                        video.setAttribute('src', dataUrl);
+                    }
+                }
+            }
+        }
+
+        // サーバーにデータを自動同期
+        async function syncToServer() {
+            try {
+                const data = {
+                    savedManuals: savedManuals,
+                    apiProvider: localStorage.getItem('lumous-api-provider')
+                };
+                await fetch('/api/backup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } catch (e) {
+                console.error('サーバー同期エラー:', e);
+            }
+        }
+
+        // Load API key + サーバーからデータ復元
+        window.addEventListener('DOMContentLoaded', async () => {
             const savedProvider = localStorage.getItem('lumous-api-provider') || 'groq';
             const savedKey = localStorage.getItem('lumous-api-key');
             document.getElementById('apiProvider').value = savedProvider;
@@ -1024,6 +1382,29 @@
                 document.getElementById('apiStatus').textContent = '設定済み';
                 document.getElementById('apiStatus').classList.add('connected');
             }
+
+            // localStorageが空ならサーバーから復元、データがあればサーバーに同期
+            if (savedManuals.length === 0) {
+                try {
+                    const response = await fetch('/api/restore');
+                    const data = await response.json();
+                    if (data && data.savedManuals && data.savedManuals.length > 0) {
+                        savedManuals = data.savedManuals;
+                        localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
+                        if (data.apiProvider) {
+                            localStorage.setItem('lumous-api-provider', data.apiProvider);
+                            document.getElementById('apiProvider').value = data.apiProvider;
+                        }
+                        console.log('サーバーから ' + savedManuals.length + ' 件のマニュアルを復元しました');
+                    }
+                } catch (e) {
+                    console.error('サーバーからの復元エラー:', e);
+                }
+            } else {
+                // localStorageにデータがある場合はサーバーに同期
+                syncToServer();
+            }
+
             renderSavedList();
         });
 
@@ -1096,15 +1477,18 @@
   * ノードIDは英語のみ使用（例: A, B, C, step1, step2）
   * 日本語テキストは必ず角括弧で囲む（例: A[電話を受ける]）
   * 条件分岐は波括弧を使う（例: C{既存顧客か}）
-  * 矢印は --> のみ使う。-->|ラベル| は絶対に使わない
-  * 条件分岐の結果はノード名に含める（例: D1[はい: 担当者に繋ぐ], D2[いいえ: フォーム記入]）
+  * 矢印は --> を使う
+  * 条件分岐からの矢印には必ず -->|はい| と -->|いいえ| のラベルを付けて、どちらがYesでどちらがNoか明確にする
+  * ラベルの中に特殊文字やコロンは使わない（はい、いいえ、OK、NG など短い日本語のみ）
   * 丸括弧()は絶対に使わない
   * セミコロン;は絶対に使わない
   * 特殊文字「」『』（）を図の中で使わない
   * 各行は1つの接続だけにする
   * subgraphを使わない
   * 同じノードから同じラベルで複数の矢印を出さない（例: E -->|はい| F と E -->|はい| G は禁止。F --> G のように直列にする）
-  * 条件分岐{...}からは必ず2本の矢印を出す
+  * 条件分岐{...}からは必ず2本の矢印を出し、それぞれ -->|はい| と -->|いいえ| を付ける
+  * 分岐後のノードには具体的な行動を書く（例: ×「次へ進む」 ○「クリックポストでラベル印刷」）
+  * フローは上から下へ、最後に完了ノードを入れる
   * 各ノードのテキストの先頭に内容に合った絵文字を必ず付ける。以下を参考に:
     お客様/人/担当者 → 👤, 電話 → 📞, メール → 📧, 確認/チェック → ✅, 書類/フォーム/記入 → 📝, 検索/調べる → 🔍, 連絡/通知 → 📢, 承認/OK → ✅, 却下/NG → ❌, 開始 → ▶️, 完了/終了 → ✔️, 判断/分岐 → ❓, 報告 → 📊, 設定/PC → 💻, 保存 → 💾, 会議/相談 → 🤝, 注意/警告 → ⚠️, 待機 → ⏳, 部署/チーム → 🏢, 上司 → 👔, 研修/学習 → 📚, 面談 → 🗣️
     上記にないものも内容に合う絵文字を自由に選んでください
@@ -1114,8 +1498,11 @@
 graph TD
     A[📞 電話を受ける] --> B[👤 名前を聞く]
     B --> C{🔍 既存顧客か}
-    C --> D[✅ はい: 担当者に繋ぐ]
-    C --> E[📝 いいえ: 受付フォームに記入]
+    C -->|はい| D[✅ 担当者に繋ぐ]
+    C -->|いいえ| E[📝 受付フォームに記入]
+    D --> F{📞 担当者は在席か}
+    F -->|はい| G[🤝 電話を転送]
+    F -->|いいえ| H[📝 折り返し連絡先を聞く]
 </pre></div>
 
 【HTML構造のルール】
@@ -1127,6 +1514,7 @@ graph TD
 - HTMLタグのみ出力（<html>や<body>タグは不要、markdownのコードブロックも不要）
 - 日本語で作成
 - 分かりやすく、誰でも理解できる言葉で書く
+- テキスト内にURLがある場合は必ず <a href="URL" target="_blank">URL</a> としてクリック可能なリンクにする
 
 【内容】
 ${input}`;
@@ -1180,6 +1568,11 @@ ${input}`;
                     return '<div class="mermaid-container"><pre class="mermaid">' + code.trim() + '</pre></div>';
                 });
 
+                // Auto-link URLs that are not already inside <a> tags
+                html = html.replace(/(^|[^"'>])(https?:\/\/[^\s<)"']+)/g, '$1<a href="$2" target="_blank">$2</a>');
+                // Ensure ALL <a> tags open in new tab
+                html = html.replace(/<a\s+(?!.*target=)/g, '<a target="_blank" ');
+
                 // Store current html
                 currentHtml = html;
                 diagramVisible = true;
@@ -1204,9 +1597,11 @@ ${input}`;
                 document.getElementById('imgBtn').style.display = '';
                 document.getElementById('fullscreenBtn').style.display = '';
                 document.getElementById('videoBtn').style.display = '';
+                document.getElementById('downloadHtmlBtn').style.display = '';
                 document.getElementById('overwriteBtn').style.display = savedManuals.length > 0 ? '' : 'none';
 
                 showToast('マニュアルを生成しました');
+                refreshAutoLinks();
 
             } catch (error) {
                 showToast('エラー: ' + error.message);
@@ -1234,8 +1629,6 @@ ${input}`;
             if (!fixed.match(/^(graph|sequenceDiagram|stateDiagram|mindmap|gantt|pie|classDiagram)/)) {
                 fixed = 'graph TD\n' + fixed;
             }
-            // Remove ALL edge labels -->|text| → just -->
-            fixed = fixed.replace(/-->\|[^|]*\|/g, '-->');
             return fixed;
         }
 
@@ -1257,7 +1650,7 @@ ${input}`;
         }
 
         // ===== Save Manual =====
-        function saveManual() {
+        async function saveManual() {
             // If in edit mode, capture latest content
             const manualOutput = document.querySelector('.manual-output');
             if (manualOutput) {
@@ -1275,12 +1668,16 @@ ${input}`;
             containers.forEach((container, i) => {
                 const code = currentMermaidCodes[i] || '';
                 if (code) {
-                    container.innerHTML = `<pre class="mermaid">${code}</pre>`;
+                    container.innerHTML = '<pre class="mermaid">' + code + '</pre>';
                 }
             });
+            tempEl.querySelectorAll('.edit-indicator, .inline-video-btn').forEach(el => el.remove());
 
-            const cleanHtml = tempEl.innerHTML;
-            const h1 = tempEl.querySelector('h1');
+            // Save videos to IndexedDB, strip data URLs
+            const cleanHtml = await stripVideosForStorage(tempEl.innerHTML);
+            const temp2 = document.createElement('div');
+            temp2.innerHTML = cleanHtml;
+            const h1 = temp2.querySelector('h1');
             const title = h1 ? h1.textContent.trim() : document.getElementById('inputText').value.substring(0, 30);
 
             const item = {
@@ -1292,8 +1689,16 @@ ${input}`;
                 date: new Date().toLocaleDateString('ja-JP')
             };
             savedManuals.unshift(item);
-            localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
+            try {
+                localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
+            } catch (e) {
+                console.error('localStorage save error:', e);
+                showToast('保存エラー: ストレージ容量不足の可能性があります');
+                savedManuals.shift();
+                return;
+            }
             renderSavedList();
+            syncToServer();
             showToast('マニュアルを保存しました');
         }
 
@@ -1324,12 +1729,15 @@ ${input}`;
                         <div class="history-title">${item.title}</div>
                         <div class="history-date">${item.date}</div>
                     </div>
-                    <button class="history-delete" onclick="event.stopPropagation(); deleteSaved(${item.id})">×</button>
+                    <div class="history-actions">
+                        <button class="history-rename" onclick="event.stopPropagation(); renameSaved(${item.id})" title="名前を変更">✏</button>
+                        <button class="history-delete" onclick="event.stopPropagation(); deleteSaved(${item.id})">×</button>
+                    </div>
                 </div>
             `).join('');
         }
 
-        function loadSaved(id) {
+        async function loadSaved(id) {
             const item = savedManuals.find(h => h.id === id);
             if (!item) return;
             document.getElementById('inputText').value = item.input;
@@ -1337,8 +1745,11 @@ ${input}`;
             currentMermaidCodes = item.mermaidCodes || [];
             diagramVisible = true;
             const output = document.getElementById('outputContent');
-            output.innerHTML = `<div class="manual-output">${item.html}</div>`;
-            renderMermaidDiagrams();
+            output.innerHTML = '<div class="manual-output">' + item.html + '</div>';
+            await renderMermaidDiagrams();
+            // Restore videos from IndexedDB
+            const manualOutput = output.querySelector('.manual-output');
+            if (manualOutput) await restoreVideosInElement(manualOutput);
             document.getElementById('saveBtn').style.display = '';
             document.getElementById('toggleBtn').style.display = '';
             document.getElementById('editBtn').style.display = '';
@@ -1347,13 +1758,27 @@ ${input}`;
             document.getElementById('videoBtn').style.display = '';
             document.getElementById('overwriteBtn').style.display = savedManuals.length > 0 ? '' : 'none';
             showToast('マニュアルを読み込みました');
+            refreshAutoLinks();
         }
 
         function deleteSaved(id) {
             savedManuals = savedManuals.filter(h => h.id !== id);
             localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
             renderSavedList();
+            syncToServer();
             showToast('削除しました');
+        }
+
+        function renameSaved(id) {
+            const item = savedManuals.find(h => h.id === id);
+            if (!item) return;
+            const newName = prompt('新しい名前を入力してください', item.title);
+            if (newName === null || newName.trim() === '') return;
+            item.title = newName.trim();
+            localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
+            renderSavedList();
+            syncToServer();
+            showToast('名前を変更しました');
         }
 
         function clearAllSaved() {
@@ -1361,22 +1786,134 @@ ${input}`;
             savedManuals = [];
             localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
             renderSavedList();
+            syncToServer();
             showToast('すべて削除しました');
         }
 
+        // ===== Input Panel Toggle =====
+        function toggleInputPanel() {
+            const panel = document.getElementById('inputPanel');
+            const btn = document.getElementById('inputToggleBtn');
+            panel.classList.toggle('collapsed');
+            btn.innerHTML = panel.classList.contains('collapsed') ? '&#x25B6;' : '&#x25C0;';
+        }
+
+        // ===== Link Panel =====
+        function extractLinksFromHtml(html) {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            const links = [];
+            const seen = new Set();
+            temp.querySelectorAll('a[href]').forEach(a => {
+                const url = a.getAttribute('href');
+                if (url && url.match(/^https?:\/\//) && !seen.has(url)) {
+                    seen.add(url);
+                    const name = a.textContent.trim();
+                    links.push({
+                        name: (name && name !== url) ? name : '',
+                        url: url,
+                        auto: true
+                    });
+                }
+            });
+            return links;
+        }
+
+        function updateLinkPanel() {
+            const container = document.getElementById('linkList');
+            const badge = document.getElementById('linkCount');
+            if (manualLinks.length === 0) {
+                container.innerHTML = '<div class="link-empty">リンクはまだありません</div>';
+                badge.textContent = '0';
+                return;
+            }
+            badge.textContent = manualLinks.length;
+            container.innerHTML = manualLinks.map((link, i) => `
+                <div class="link-item">
+                    <div style="flex:1;min-width:0;">
+                        <div class="link-item-name" style="display:flex;align-items:center;gap:4px;">
+                            <span>${link.name || '(名前なし)'}</span>
+                            <button class="link-item-delete" onclick="event.stopPropagation(); renameLink(${i})" title="名前を編集" style="font-size:12px;">✏</button>
+                        </div>
+                        <a href="${link.url}" target="_blank" title="${link.url}">${link.url}</a>
+                    </div>
+                    <button class="link-item-delete" onclick="removeLink(${i})" title="削除">×</button>
+                </div>
+            `).join('');
+        }
+
+        function refreshAutoLinks() {
+            const autoLinks = extractLinksFromHtml(currentHtml);
+            // Apply saved name overrides to auto links
+            autoLinks.forEach(link => {
+                if (link.url in linkNameOverrides) {
+                    link.name = linkNameOverrides[link.url];
+                }
+            });
+            // Keep manual links, replace auto links
+            const manual = manualLinks.filter(l => !l.auto);
+            manualLinks = [...autoLinks, ...manual];
+            updateLinkPanel();
+        }
+
+        function addManualLink() {
+            const nameInput = document.getElementById('linkAddName');
+            const urlInput = document.getElementById('linkAddUrl');
+            const name = nameInput.value.trim();
+            const url = urlInput.value.trim();
+            if (!url) {
+                showToast('URLを入力してください');
+                return;
+            }
+            if (!url.match(/^https?:\/\//)) {
+                showToast('URLはhttps://で始めてください');
+                return;
+            }
+            manualLinks.push({ name: name || '', url: url, auto: false });
+            nameInput.value = '';
+            urlInput.value = '';
+            updateLinkPanel();
+            showToast('リンクを追加しました');
+        }
+
+        function removeLink(index) {
+            manualLinks.splice(index, 1);
+            updateLinkPanel();
+        }
+
+        function renameLink(index) {
+            const link = manualLinks[index];
+            if (!link) return;
+            const newName = prompt('リンク名を入力してください', link.name || '');
+            if (newName === null) return;
+            link.name = newName.trim();
+            // Save name override so it persists across refreshes
+            linkNameOverrides[link.url] = link.name;
+            localStorage.setItem('lumous-link-names', JSON.stringify(linkNameOverrides));
+            updateLinkPanel();
+            showToast('リンク名を変更しました');
+        }
+
         // ===== Overwrite Existing Manual =====
+        let _overwriteTargetId = null;
+
         function openOverwriteModal() {
             if (savedManuals.length === 0) {
                 showToast('保存済みマニュアルがありません');
                 return;
             }
+            _overwriteTargetId = null;
             document.getElementById('overwriteModalOverlay').style.display = 'flex';
             document.getElementById('overwriteSearch').value = '';
+            document.getElementById('overwriteStep1').style.display = '';
+            document.getElementById('overwriteStep2').style.display = 'none';
+            document.getElementById('overwriteFooter').style.display = '';
             renderOverwriteList();
         }
 
         function closeOverwriteModal() {
             document.getElementById('overwriteModalOverlay').style.display = 'none';
+            _overwriteTargetId = null;
         }
 
         function renderOverwriteList() {
@@ -1394,7 +1931,7 @@ ${input}`;
                 return;
             }
             container.innerHTML = filtered.map(item => `
-                <div class="history-item" onclick="overwriteManual(${item.id})" style="cursor:pointer;">
+                <div class="history-item" onclick="selectOverwriteTarget(${item.id})" style="cursor:pointer;">
                     <div>
                         <div class="history-title">${item.title}</div>
                         <div class="history-date">${item.date}</div>
@@ -1403,37 +1940,252 @@ ${input}`;
             `).join('');
         }
 
-        function overwriteManual(id) {
+        function selectOverwriteTarget(id) {
             const item = savedManuals.find(h => h.id === id);
             if (!item) return;
+            _overwriteTargetId = id;
+            document.getElementById('overwriteStep1').style.display = 'none';
+            document.getElementById('overwriteFooter').style.display = 'none';
+            document.getElementById('overwriteStep2').style.display = '';
+            document.getElementById('overwriteConfirmInfo').innerHTML = `
+                <div style="font-weight:600;font-size:15px;margin-bottom:6px;">${item.title}</div>
+                <div style="font-size:12px;color:var(--text-muted);">保存日: ${item.date}</div>
+            `;
+        }
 
-            // Clean current content: replace SVGs with mermaid codes
+        function overwriteGoBack() {
+            _overwriteTargetId = null;
+            document.getElementById('overwriteStep2').style.display = 'none';
+            document.getElementById('overwriteStep1').style.display = '';
+            document.getElementById('overwriteFooter').style.display = '';
+        }
+
+        async function overwriteConfirm() {
+            try {
+                if (!_overwriteTargetId) { closeOverwriteModal(); return; }
+                const item = savedManuals.find(h => h.id === _overwriteTargetId);
+                if (!item) { closeOverwriteModal(); showToast('対象が見つかりません'); return; }
+
+                const manualOutput = document.querySelector('.manual-output');
+                if (!manualOutput) { closeOverwriteModal(); showToast('内容がありません'); return; }
+
+                const tempEl = document.createElement('div');
+                tempEl.innerHTML = manualOutput.innerHTML;
+                tempEl.querySelectorAll('.mermaid-container').forEach((container, i) => {
+                    const code = currentMermaidCodes[i] || '';
+                    if (code) {
+                        container.innerHTML = '<pre class="mermaid">' + code + '</pre>';
+                    }
+                });
+                tempEl.querySelectorAll('.edit-indicator, .inline-video-btn').forEach(el => el.remove());
+
+                // Save videos to IndexedDB, strip data URLs
+                const cleanHtml = await stripVideosForStorage(tempEl.innerHTML);
+                const temp2 = document.createElement('div');
+                temp2.innerHTML = cleanHtml;
+
+                const h1 = temp2.querySelector('h1');
+                item.title = h1 ? h1.textContent.trim() : item.title;
+                item.html = cleanHtml;
+                item.input = document.getElementById('inputText').value;
+                item.mermaidCodes = currentMermaidCodes;
+                item.date = new Date().toLocaleDateString('ja-JP');
+
+                localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
+                renderSavedList();
+                syncToServer();
+                showToast('上書き保存しました');
+            } catch (e) {
+                console.error('overwriteConfirm error:', e);
+                showToast('エラー: ' + e.message);
+            } finally {
+                closeOverwriteModal();
+            }
+        }
+
+        // ===== Download as HTML =====
+        async function downloadManualAsHtml() {
             const manualOutput = document.querySelector('.manual-output');
-            if (!manualOutput) return;
+            if (!manualOutput) { showToast('ダウンロードするマニュアルがありません'); return; }
 
-            const tempEl = document.createElement('div');
-            tempEl.innerHTML = manualOutput.innerHTML;
-            tempEl.querySelectorAll('.mermaid-container').forEach((container, i) => {
-                const code = currentMermaidCodes[i] || '';
-                if (code) {
-                    container.innerHTML = `<pre class="mermaid">${code}</pre>`;
+            const clone = manualOutput.cloneNode(true);
+            // Remove edit-mode artifacts
+            clone.querySelectorAll('.edit-indicator, .inline-video-btn, .vid-delete, .img-delete').forEach(el => el.remove());
+            // Restore videos from IndexedDB into clone (embeds as data URLs - file may be large)
+            await restoreVideosInElement(clone);
+            // Remove "mermaid" class from already-rendered <pre> tags so mermaid.initialize doesn't try to re-render them
+            clone.querySelectorAll('pre.mermaid').forEach(pre => {
+                if (pre.querySelector('svg')) {
+                    pre.classList.remove('mermaid');
                 }
             });
-            const indicator = tempEl.querySelector('.edit-indicator');
-            if (indicator) indicator.remove();
 
-            // Update with new content
-            const h1 = tempEl.querySelector('h1');
-            item.title = h1 ? h1.textContent.trim() : item.title;
-            item.html = tempEl.innerHTML;
-            item.input = document.getElementById('inputText').value;
-            item.mermaidCodes = currentMermaidCodes;
-            item.date = new Date().toLocaleDateString('ja-JP');
+            const title = (clone.querySelector('h1') || {}).textContent || 'マニュアル';
 
-            localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
-            renderSavedList();
-            closeOverwriteModal();
-            showToast(`「${item.title}」を上書き保存しました`);
+            const dlStyles = `
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif; max-width: 900px; margin: 0 auto; padding: 32px; color: #333; line-height: 1.8; background: #f8f9fa; }
+.manual-output h1 { font-size: 24px; font-weight: 600; color: #685021; margin-bottom: 8px; padding-bottom: 12px; border-bottom: 2px solid #c39f59; }
+.manual-output h2 { font-size: 20px; font-weight: 600; color: #685021; margin: 28px 0 12px; padding-left: 12px; border-left: 4px solid #c39f59; }
+.manual-output h3 { font-size: 16px; font-weight: 600; color: #333; margin: 20px 0 8px; }
+.manual-output p { margin: 8px 0; line-height: 1.8; }
+.manual-output ul, .manual-output ol { margin: 8px 0 8px 24px; line-height: 2; }
+.manual-output li { margin: 4px 0; }
+.manual-output strong { color: #685021; }
+.manual-output a { color: #685021; text-decoration: underline; word-break: break-all; }
+.manual-output .mermaid-container { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 24px; margin: 20px 0; text-align: center; }
+.manual-output .step-box { background: #f8f9fa; border-left: 4px solid #c39f59; border-radius: 8px; padding: 16px 20px; margin: 12px 0; }
+.manual-output .note-box { background: #fff8e1; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 16px 20px; margin: 12px 0; }
+.manual-output .warning-box { background: #fef2f2; border-left: 4px solid #ef4444; border-radius: 8px; padding: 16px 20px; margin: 12px 0; }
+.manual-output table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+.manual-output th { background: #f8f9fa; padding: 10px; border: 1px solid #e9ecef; text-align: left; font-weight: 600; }
+.manual-output td { padding: 10px; border: 1px solid #e9ecef; text-align: left; }
+.manual-output tr:hover td { background: #f8f9fa; }
+.video-wrapper { margin: 16px 0; }
+.video-wrapper video { max-width: 100%; border-radius: 8px; border: 1px solid #e9ecef; }
+.image-wrapper { margin: 16px 0; }
+.image-wrapper img { max-width: 100%; border-radius: 8px; }
+.manual-output img { max-width: 100%; border-radius: 8px; display: block; margin: 16px auto; }
+.manual-output img.inserted-image { max-width: 100%; border-radius: 8px; margin: 16px 0; border: 1px solid #e9ecef; }
+.image-wrapper { margin: 16px 0; }
+.manual-output img { max-width: 100%; border-radius: 8px; }
+.image-wrapper .img-delete { display: none; }
+@media print { body { padding: 0; background: white; } }
+`;
+            const htmlContent = '<!DOCTYPE html>\n<html lang="ja">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>' + title.trim() + '</title>\n' +
+                '<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"><\/script>\n' +
+                '<style>\n' + dlStyles + '</style>\n</head>\n<body>\n' +
+                '<div class="manual-output">\n' + clone.innerHTML + '\n</div>\n' +
+                '<script>mermaid.initialize({startOnLoad:true, theme:"base", themeVariables:{primaryColor:"#c39f59",primaryBorderColor:"#8b6f47",primaryTextColor:"#333",lineColor:"#8b6f47"}});<\/script>\n' +
+                '</body>\n</html>';
+
+            const fileName = title.trim().replace(/[\/\\:*?"<>|]/g, '_') + '.html';
+            const sizeMB = (htmlContent.length / 1024 / 1024).toFixed(1);
+            if (htmlContent.length > 50 * 1024 * 1024) {
+                if (!confirm('ファイルサイズが約' + sizeMB + 'MBと大きいです。ダウンロードを続行しますか？')) return;
+            }
+            try {
+                const resp = await fetch('/api/download-html', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ html: htmlContent, fileName: fileName })
+                });
+                if (!resp.ok) throw new Error('サーバーエラー');
+                const blob = await resp.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('HTMLファイルをダウンロードしました');
+            } catch (e) {
+                console.error('Download error:', e);
+                // Fallback: open in new tab
+                const blob = new Blob([htmlContent], { type: 'text/html; charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                showToast('新しいタブで開きました（右クリック→保存で保存できます）');
+            }
+        }
+
+        // ===== JSON Export / Import =====
+        async function exportAllAsJson() {
+            if (savedManuals.length === 0) {
+                showToast('エクスポートするマニュアルがありません');
+                return;
+            }
+
+            // Include video data from IndexedDB
+            const exportData = {
+                version: 1,
+                exportDate: new Date().toISOString(),
+                apiProvider: localStorage.getItem('lumous-api-provider') || 'groq',
+                manuals: []
+            };
+
+            for (const manual of savedManuals) {
+                const m = Object.assign({}, manual);
+                // Extract video IDs from html and include video data
+                const tempEl = document.createElement('div');
+                tempEl.innerHTML = m.html;
+                const videoEls = tempEl.querySelectorAll('video[data-video-id]');
+                m.videos = {};
+                for (const v of videoEls) {
+                    const vid = v.getAttribute('data-video-id');
+                    if (vid) {
+                        try {
+                            const data = await getVideoFromDB(vid);
+                            if (data) m.videos[vid] = data;
+                        } catch (e) { /* skip missing videos */ }
+                    }
+                }
+                exportData.manuals.push(m);
+            }
+
+            const json = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([json], { type: 'application/json; charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'lumous-manuals-' + new Date().toISOString().slice(0, 10) + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            document.getElementById('exportStatus').textContent = savedManuals.length + '件のマニュアルをエクスポートしました';
+            showToast('JSONファイルをダウンロードしました');
+        }
+
+        async function importFromJson(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            event.target.value = '';
+
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+
+                if (!data.manuals || !Array.isArray(data.manuals)) {
+                    showToast('無効なファイル形式です');
+                    return;
+                }
+
+                const count = data.manuals.length;
+                if (!confirm(count + '件のマニュアルをインポートします。既存のマニュアルに追加されます。よろしいですか？')) return;
+
+                // Restore videos to IndexedDB
+                for (const m of data.manuals) {
+                    if (m.videos) {
+                        for (const [vid, dataUrl] of Object.entries(m.videos)) {
+                            await saveVideoToDB(vid, dataUrl);
+                        }
+                        delete m.videos;
+                    }
+                }
+
+                // Merge: add imported manuals, skip duplicates by id
+                const existingIds = new Set(savedManuals.map(m => m.id));
+                let added = 0;
+                for (const m of data.manuals) {
+                    if (!existingIds.has(m.id)) {
+                        savedManuals.push(m);
+                        added++;
+                    }
+                }
+
+                localStorage.setItem('lumous-saved-manuals', JSON.stringify(savedManuals));
+                renderSavedList();
+                syncToServer();
+                document.getElementById('exportStatus').textContent = added + '件追加（' + (count - added) + '件は既存のためスキップ）';
+                showToast(added + '件のマニュアルをインポートしました');
+            } catch (e) {
+                console.error('Import error:', e);
+                showToast('インポートエラー: ' + e.message);
+            }
         }
 
         // ===== Toggle Diagram ↔ Text =====
@@ -1526,6 +2278,37 @@ ${input}`;
                     container._diagramClickHandler = function() { openDiagramEditor(container, i); };
                     container.addEventListener('click', container._diagramClickHandler);
                 });
+
+                // Add inline media buttons after each section
+                manualOutput.querySelectorAll('h1, h2, h3, p, ul, ol, table, .step-box, .note-box, .warning-box, .mermaid-container, .video-wrapper, .image-wrapper').forEach(el => {
+                    const btnGroup = document.createElement('div');
+                    btnGroup.className = 'inline-media-group inline-video-btn';
+                    btnGroup.style.cssText = 'display:flex;gap:8px;background:none;border:none;padding:0;';
+
+                    const imgBtnInline = document.createElement('button');
+                    imgBtnInline.className = 'inline-video-btn';
+                    imgBtnInline.style.flex = '1';
+                    imgBtnInline.textContent = '🖼 + 画像をここに追加';
+                    imgBtnInline.onclick = function(e) {
+                        e.stopPropagation();
+                        _inlineImageTarget = el;
+                        document.getElementById('imageInput').click();
+                    };
+
+                    const vidBtnInline = document.createElement('button');
+                    vidBtnInline.className = 'inline-video-btn';
+                    vidBtnInline.style.flex = '1';
+                    vidBtnInline.textContent = '🎬 + 動画をここに追加';
+                    vidBtnInline.onclick = function(e) {
+                        e.stopPropagation();
+                        _inlineVideoTarget = el;
+                        document.getElementById('videoInput').click();
+                    };
+
+                    btnGroup.appendChild(imgBtnInline);
+                    btnGroup.appendChild(vidBtnInline);
+                    el.parentNode.insertBefore(btnGroup, el.nextSibling);
+                });
             } else {
                 outputContent.classList.remove('editing');
                 btn.classList.remove('active');
@@ -1547,10 +2330,69 @@ ${input}`;
                     }
                 });
 
+                // Remove inline video buttons
+                manualOutput.querySelectorAll('.inline-video-btn').forEach(btn => btn.remove());
+
+                // Sync <a> tag href with edited text content
+                manualOutput.querySelectorAll('a').forEach(a => {
+                    const text = a.textContent.trim();
+                    if (text.match(/^https?:\/\//)) {
+                        a.href = text;
+                    }
+                });
+
+                // Auto-link plain text URLs (not yet wrapped in <a>)
+                autoLinkTextNodes(manualOutput);
+
                 // Update currentHtml with edited content
                 currentHtml = manualOutput.innerHTML;
                 showToast('編集内容を反映しました');
+                refreshAutoLinks();
             }
+        }
+
+        // ===== Auto-link plain text URLs in DOM =====
+        function autoLinkTextNodes(root) {
+            const urlRegex = /(https?:\/\/[^\s<>"']+)/g;
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+                acceptNode: function(node) {
+                    // Skip text inside existing <a> tags or script/style
+                    let p = node.parentNode;
+                    while (p && p !== root) {
+                        const tag = p.tagName;
+                        if (tag === 'A' || tag === 'SCRIPT' || tag === 'STYLE' || tag === 'PRE' || tag === 'CODE') {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        p = p.parentNode;
+                    }
+                    return urlRegex.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+                }
+            });
+            const targets = [];
+            let n;
+            while ((n = walker.nextNode())) targets.push(n);
+            targets.forEach(textNode => {
+                const text = textNode.nodeValue;
+                const frag = document.createDocumentFragment();
+                let lastIdx = 0;
+                let m;
+                const re = /(https?:\/\/[^\s<>"']+)/g;
+                while ((m = re.exec(text)) !== null) {
+                    if (m.index > lastIdx) {
+                        frag.appendChild(document.createTextNode(text.slice(lastIdx, m.index)));
+                    }
+                    const a = document.createElement('a');
+                    a.href = m[1];
+                    a.target = '_blank';
+                    a.textContent = m[1];
+                    frag.appendChild(a);
+                    lastIdx = m.index + m[1].length;
+                }
+                if (lastIdx < text.length) {
+                    frag.appendChild(document.createTextNode(text.slice(lastIdx)));
+                }
+                textNode.parentNode.replaceChild(frag, textNode);
+            });
         }
 
         // ===== Diagram Editor =====
@@ -1670,21 +2512,27 @@ ${input}`;
             wrapper.className = 'image-wrapper';
             wrapper.innerHTML = `<img src="${dataUrl}" class="inserted-image" alt="挿入画像"><button class="img-delete" onclick="this.parentElement.remove()">×</button>`;
 
-            // Insert at end or at cursor position
-            const selection = window.getSelection();
-            if (selection.rangeCount > 0 && manualOutput.contains(selection.anchorNode)) {
-                const range = selection.getRangeAt(0);
-                let targetNode = range.startContainer;
-                while (targetNode && targetNode.parentNode !== manualOutput) {
-                    targetNode = targetNode.parentNode;
-                }
-                if (targetNode) {
-                    manualOutput.insertBefore(wrapper, targetNode.nextSibling);
+            // Insert after inline image target if set
+            if (_inlineImageTarget && manualOutput.contains(_inlineImageTarget)) {
+                _inlineImageTarget.parentNode.insertBefore(wrapper, _inlineImageTarget.nextSibling);
+                _inlineImageTarget = null;
+            } else {
+                // Insert at end or at cursor position
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0 && manualOutput.contains(selection.anchorNode)) {
+                    const range = selection.getRangeAt(0);
+                    let targetNode = range.startContainer;
+                    while (targetNode && targetNode.parentNode !== manualOutput) {
+                        targetNode = targetNode.parentNode;
+                    }
+                    if (targetNode) {
+                        manualOutput.insertBefore(wrapper, targetNode.nextSibling);
+                    } else {
+                        manualOutput.appendChild(wrapper);
+                    }
                 } else {
                     manualOutput.appendChild(wrapper);
                 }
-            } else {
-                manualOutput.appendChild(wrapper);
             }
 
             // Update currentHtml
@@ -1714,21 +2562,27 @@ ${input}`;
                 wrapper.className = 'video-wrapper';
                 wrapper.innerHTML = `<video src="${e.target.result}" controls></video><button class="vid-delete" onclick="this.parentElement.remove()">×</button>`;
 
-                // Insert at cursor or end
-                const selection = window.getSelection();
-                if (selection.rangeCount > 0 && manualOutput.contains(selection.anchorNode)) {
-                    const range = selection.getRangeAt(0);
-                    let targetNode = range.startContainer;
-                    while (targetNode && targetNode.parentNode !== manualOutput) {
-                        targetNode = targetNode.parentNode;
-                    }
-                    if (targetNode) {
-                        manualOutput.insertBefore(wrapper, targetNode.nextSibling);
+                // Insert after inline video target if set
+                if (_inlineVideoTarget && manualOutput.contains(_inlineVideoTarget)) {
+                    _inlineVideoTarget.parentNode.insertBefore(wrapper, _inlineVideoTarget.nextSibling);
+                    _inlineVideoTarget = null;
+                } else {
+                    // Insert at cursor or end
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0 && manualOutput.contains(selection.anchorNode)) {
+                        const range = selection.getRangeAt(0);
+                        let targetNode = range.startContainer;
+                        while (targetNode && targetNode.parentNode !== manualOutput) {
+                            targetNode = targetNode.parentNode;
+                        }
+                        if (targetNode) {
+                            manualOutput.insertBefore(wrapper, targetNode.nextSibling);
+                        } else {
+                            manualOutput.appendChild(wrapper);
+                        }
                     } else {
                         manualOutput.appendChild(wrapper);
                     }
-                } else {
-                    manualOutput.appendChild(wrapper);
                 }
 
                 currentHtml = manualOutput.innerHTML;

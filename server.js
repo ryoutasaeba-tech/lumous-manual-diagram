@@ -6,6 +6,18 @@ const { execSync } = require('child_process');
 const PORT = process.env.PORT || 3456;
 const PROJECT_DIR = __dirname;
 
+// Dropbox共有フォルダのパス（存在すればDropbox経由で同期）
+const DROPBOX_DATA_PATHS = [
+    '/mnt/c/Users/ryota/Dropbox/LUMOUS_SYSTEM/lumous-manual-diagram/user-data.json',  // WSL
+    'C:\\Users\\ryota\\Dropbox\\LUMOUS_SYSTEM\\lumous-manual-diagram\\user-data.json',  // Windows
+];
+function getDataPath() {
+    for (const p of DROPBOX_DATA_PATHS) {
+        try { if (fs.existsSync(p)) return p; } catch (_) {}
+    }
+    return path.join(PROJECT_DIR, 'user-data.json');
+}
+
 const mimeTypes = {
     '.html': 'text/html',
     '.css': 'text/css',
@@ -23,9 +35,15 @@ const server = http.createServer((req, res) => {
         req.on('data', chunk => body += chunk);
         req.on('end', () => {
             try {
-                // Save user data to JSON file
+                // Save user data to JSON file (Dropbox共有対応)
                 const data = JSON.parse(body);
-                fs.writeFileSync(path.join(PROJECT_DIR, 'user-data.json'), JSON.stringify(data, null, 2), 'utf-8');
+                const dataPath = getDataPath();
+                fs.writeFileSync(dataPath, JSON.stringify(data, null, 2), 'utf-8');
+                // ローカルにもコピーを保存
+                const localPath = path.join(PROJECT_DIR, 'user-data.json');
+                if (dataPath !== localPath) {
+                    fs.writeFileSync(localPath, JSON.stringify(data, null, 2), 'utf-8');
+                }
 
                 // Git add, commit, push
                 const timestamp = new Date().toLocaleString('ja-JP');
@@ -56,9 +74,9 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    // API: Restore data from JSON
+    // API: Restore data from JSON (Dropbox共有対応)
     if (req.method === 'GET' && req.url === '/api/restore') {
-        const dataPath = path.join(PROJECT_DIR, 'user-data.json');
+        const dataPath = getDataPath();
         if (fs.existsSync(dataPath)) {
             const data = fs.readFileSync(dataPath, 'utf-8');
             res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -67,6 +85,30 @@ const server = http.createServer((req, res) => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(null));
         }
+        return;
+    }
+
+    // API: Download HTML file
+    if (req.method === 'POST' && req.url === '/api/download-html') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body);
+                const htmlContent = data.html || '';
+                const fileName = (data.fileName || 'manual.html').replace(/[^a-zA-Z0-9\u3000-\u9FFF\u30A0-\u30FF\u3040-\u309F._\-]/g, '_');
+                // Save a debug copy
+                try { fs.writeFileSync(path.join(PROJECT_DIR, 'last-download.html'), htmlContent, 'utf-8'); } catch (_) {}
+                res.writeHead(200, {
+                    'Content-Type': 'text/html; charset=utf-8',
+                    'Content-Disposition': 'attachment; filename*=UTF-8\'\'' + encodeURIComponent(fileName)
+                });
+                res.end(htmlContent);
+            } catch (e) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
         return;
     }
 
@@ -81,7 +123,12 @@ const server = http.createServer((req, res) => {
             res.end('Not Found');
             return;
         }
-        res.writeHead(200, { 'Content-Type': contentType + '; charset=utf-8' });
+        res.writeHead(200, {
+            'Content-Type': contentType + '; charset=utf-8',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        });
         res.end(content);
     });
 });
