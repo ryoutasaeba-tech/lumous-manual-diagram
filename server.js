@@ -88,6 +88,111 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // API: 動画エクスポート (バイナリストリーミング受信)
+    if (req.method === 'POST' && req.url.startsWith('/api/save-video')) {
+        try {
+            const u = new URL(req.url, 'http://localhost');
+            const id = u.searchParams.get('id');
+            const mime = req.headers['content-type'] || 'video/mp4';
+            if (!id) { res.writeHead(400); res.end('id required'); return; }
+            const ext = mime.includes('mp4') ? 'mp4' : mime.includes('webm') ? 'webm' : mime.includes('quicktime') ? 'mov' : 'mp4';
+            const VID_DIR = '/home/ryota/lumous-manual-public/videos';
+            fs.mkdirSync(VID_DIR, { recursive: true });
+            const outPath = path.join(VID_DIR, `${id}.${ext}`);
+            const ws = fs.createWriteStream(outPath);
+            let size = 0;
+            req.on('data', c => size += c.length);
+            req.pipe(ws);
+            ws.on('finish', () => {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ ok: true, ext, size }));
+            });
+            ws.on('error', e => { res.writeHead(500); res.end(e.message); });
+        } catch (e) { res.writeHead(500); res.end(e.message); }
+        return;
+    }
+
+    // API: 既にエクスポート済みの動画ID一覧 (スキップ用)
+    if (req.method === 'GET' && req.url === '/api/saved-videos') {
+        try {
+            const VID_DIR = '/home/ryota/lumous-manual-public/videos';
+            const files = fs.existsSync(VID_DIR) ? fs.readdirSync(VID_DIR) : [];
+            const ids = files.map(f => f.replace(/\.(mp4|webm|mov)$/, ''));
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(ids));
+        } catch (e) { res.writeHead(500); res.end(e.message); }
+        return;
+    }
+
+    // GET: 動画一括エクスポートページ
+    if (req.method === 'GET' && req.url === '/export-videos') {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(`<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>動画エクスポート</title>
+<style>body{font-family:sans-serif;max-width:700px;margin:40px auto;padding:20px}
+.log{background:#f0f0f0;padding:10px;border-radius:6px;height:400px;overflow:auto;font-family:monospace;font-size:12px}
+.progress{height:24px;background:#eee;border-radius:12px;overflow:hidden;margin:10px 0}
+.bar{height:100%;background:#c39f59;transition:width .3s;text-align:center;color:white;line-height:24px}
+button{padding:10px 20px;background:#685021;color:white;border:none;border-radius:6px;cursor:pointer}</style>
+</head><body>
+<h1>📹 動画エクスポート</h1>
+<p>IndexedDBの動画を~/lumous-manual-public/videos/ に書き出します。</p>
+<button id="go">開始</button>
+<div class="progress"><div class="bar" id="bar" style="width:0%">0%</div></div>
+<div class="log" id="log"></div>
+<script>
+const log = (m) => { document.getElementById('log').innerHTML += m + '<br>'; document.getElementById('log').scrollTop = 99999; };
+document.getElementById('go').onclick = async () => {
+  log('既存ファイルチェック...');
+  const already = new Set(await (await fetch('/api/saved-videos')).json());
+  log(\`既にエクスポート済み: \${already.size}件\`);
+  log('IndexedDBを開く...');
+  const db = await new Promise((res, rej) => {
+    const r = indexedDB.open('lumous-videos', 1);
+    r.onsuccess = e => res(e.target.result);
+    r.onerror = e => rej(e);
+    r.onupgradeneeded = e => e.target.result.createObjectStore('videos');
+  });
+  const keys = await new Promise((res, rej) => {
+    const r = db.transaction('videos','readonly').objectStore('videos').getAllKeys();
+    r.onsuccess = e => res(e.target.result);
+    r.onerror = e => rej(e);
+  });
+  log(\`全動画: \${keys.length}件 / 未処理: \${keys.length - already.size}件\`);
+  let saved = 0, totalSize = 0, skipped = 0;
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    if (already.has(key)) { skipped++; continue; }
+    try {
+      // 1件ずつ取得
+      const dataUrl = await new Promise((res, rej) => {
+        const r = db.transaction('videos','readonly').objectStore('videos').get(key);
+        r.onsuccess = e => res(e.target.result);
+        r.onerror = e => rej(e);
+      });
+      // data URL → Blob (バイナリ、文字列の二重コピー回避)
+      const blobResp = await fetch(dataUrl);
+      const blob = await blobResp.blob();
+      // dataUrl 参照を解放したいので即fetch
+      const resp = await fetch('/api/save-video?id=' + encodeURIComponent(key), {
+        method:'POST',
+        headers:{'Content-Type': blob.type || 'video/mp4'},
+        body: blob
+      });
+      const j = await resp.json();
+      if (j.ok) { saved++; totalSize += j.size; log(\`  ✓ \${key}.\${j.ext} (\${(j.size/1024/1024).toFixed(1)}MB)\`); }
+      else log(\`  ✗ \${key}: \${JSON.stringify(j)}\`);
+    } catch(e) { log(\`  ✗ \${key}: \${e.message}\`); }
+    const pct = Math.round((i+1)/keys.length*100);
+    document.getElementById('bar').style.width = pct + '%';
+    document.getElementById('bar').textContent = pct + '%';
+    await new Promise(r => setTimeout(r, 100));
+  }
+  log(\`<b>完了: 新規 \${saved}件 / スキップ \${skipped}件 (新規分: \${(totalSize/1024/1024).toFixed(1)}MB)</b>\`);
+};
+</script></body></html>`);
+        return;
+    }
+
     // API: Download HTML file
     if (req.method === 'POST' && req.url === '/api/download-html') {
         let body = '';
