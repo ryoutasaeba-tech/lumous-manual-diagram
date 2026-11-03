@@ -4,6 +4,8 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const PORT = process.env.PORT || 3456;
+// 自分のパソコンからだけ見られるようにする（他の人に見せたい時は HOST=0.0.0.0 を付ける）
+const HOST = process.env.HOST || '127.0.0.1';
 const PROJECT_DIR = __dirname;
 
 // Dropbox共有フォルダのパス（存在すればDropbox経由で同期）
@@ -17,6 +19,9 @@ function getDataPath() {
     }
     return path.join(PROJECT_DIR, 'user-data.json');
 }
+
+// 動画の保存先（環境変数 LUMOUS_VIDEO_DIR で変えられる）
+const VIDEO_DIR = process.env.LUMOUS_VIDEO_DIR || '/home/ryota/lumous-manual-public/videos';
 
 const mimeTypes = {
     '.html': 'text/html',
@@ -95,8 +100,10 @@ const server = http.createServer((req, res) => {
             const id = u.searchParams.get('id');
             const mime = req.headers['content-type'] || 'video/mp4';
             if (!id) { res.writeHead(400); res.end('id required'); return; }
+            // ../ などで保存先の外に書き込まれないよう、英数字・_・- だけ許す
+            if (!/^[A-Za-z0-9_-]{1,100}$/.test(id)) { res.writeHead(400); res.end('invalid id'); return; }
             const ext = mime.includes('mp4') ? 'mp4' : mime.includes('webm') ? 'webm' : mime.includes('quicktime') ? 'mov' : 'mp4';
-            const VID_DIR = '/home/ryota/lumous-manual-public/videos';
+            const VID_DIR = VIDEO_DIR;
             fs.mkdirSync(VID_DIR, { recursive: true });
             const outPath = path.join(VID_DIR, `${id}.${ext}`);
             const ws = fs.createWriteStream(outPath);
@@ -115,7 +122,7 @@ const server = http.createServer((req, res) => {
     // API: 既にエクスポート済みの動画ID一覧 (スキップ用)
     if (req.method === 'GET' && req.url === '/api/saved-videos') {
         try {
-            const VID_DIR = '/home/ryota/lumous-manual-public/videos';
+            const VID_DIR = VIDEO_DIR;
             const files = fs.existsSync(VID_DIR) ? fs.readdirSync(VID_DIR) : [];
             const ids = files.map(f => f.replace(/\.(mp4|webm|mov)$/, ''));
             res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -218,7 +225,18 @@ document.getElementById('go').onclick = async () => {
     }
 
     // Static files
-    let filePath = path.join(PROJECT_DIR, req.url === '/' ? 'index.html' : req.url);
+    let urlPath;
+    try { urlPath = decodeURIComponent(req.url.split('?')[0].split('#')[0]); }
+    catch (_) { res.writeHead(400); res.end('Bad Request'); return; }
+    if (urlPath.includes('\0')) { res.writeHead(400); res.end('Bad Request'); return; }
+    let filePath = path.resolve(PROJECT_DIR, '.' + (urlPath === '/' ? '/index.html' : urlPath));
+    // プロジェクトのフォルダの外や、.git など「.」で始まるものは見せない
+    const rel = path.relative(PROJECT_DIR, filePath);
+    if (rel.startsWith('..') || path.isAbsolute(rel) || rel.split(path.sep).some(p => p.startsWith('.'))) {
+        res.writeHead(403);
+        res.end('Forbidden');
+        return;
+    }
     const ext = path.extname(filePath);
     const contentType = mimeTypes[ext] || 'text/plain';
 
@@ -238,6 +256,11 @@ document.getElementById('go').onclick = async () => {
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`LUMOUS Manual Diagram Maker running at http://localhost:${PORT}`);
-});
+module.exports = { server, PORT, HOST };
+
+// 直接 `node server.js` で動かした時だけ待ち受ける（試験からは読み込むだけ）
+if (require.main === module) {
+    server.listen(PORT, HOST, () => {
+        console.log(`LUMOUS Manual Diagram Maker running at http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`);
+    });
+}
